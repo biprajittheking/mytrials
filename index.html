@@ -1,0 +1,1759 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>বার বার যোগ</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Hind Siliguri & Baloo Da 2 for cheerful child-friendly Bengali typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+Da+2:wght@500;600;700;800&family=Hind+Siliguri:wght@500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Baloo Da 2', 'Hind Siliguri', sans-serif;
+            user-select: none;
+            overflow-x: hidden;
+            background: linear-gradient(135deg, #e0f2fe 0%, #dcfce7 100%);
+        }
+
+        /* Custom Animations */
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        @keyframes sunSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes cloudDrift {
+            0% { transform: translateX(-20px); }
+            50% { transform: translateX(20px); }
+            100% { transform: translateX(-20px); }
+        }
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            70% { transform: scale(1.15); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes saplingGrow {
+            0% { transform: scaleY(0) translateY(30px); opacity: 0; }
+            60% { transform: scaleY(1.15) translateY(-5px); opacity: 1; }
+            100% { transform: scaleY(1) translateY(0); opacity: 1; }
+        }
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.7); }
+            50% { transform: scale(1.12); box-shadow: 0 0 25px 10px rgba(250, 204, 21, 0.5); }
+        }
+        @keyframes bounceGentle {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+        @keyframes butterflyFly {
+            0% { transform: translate(0, 0) rotate(0deg) scale(0.9); }
+            25% { transform: translate(25px, -18px) rotate(10deg) scale(1); }
+            50% { transform: translate(50px, 5px) rotate(-8deg) scale(0.95); }
+            75% { transform: translate(25px, 15px) rotate(8deg) scale(1); }
+            100% { transform: translate(0, 0) rotate(0deg) scale(0.9); }
+        }
+        @keyframes waterDrop {
+            0% { transform: translate(0, 0) scale(0.5); opacity: 1; }
+            100% { transform: translate(-25px, 35px) scale(1.1); opacity: 0; }
+        }
+
+        .animate-float { animation: floatSlow 3s ease-in-out infinite; }
+        .animate-sun { animation: sunSpin 25s linear infinite; }
+        .animate-cloud { animation: cloudDrift 8s ease-in-out infinite; }
+        .animate-pop { animation: popIn 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+        .animate-grow {
+            transform-origin: bottom center;
+            animation: saplingGrow 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        .animate-pulse-glow { animation: pulseGlow 1.4s ease-in-out infinite; }
+        .animate-butterfly { animation: butterflyFly 5s ease-in-out infinite; }
+        .water-drop-anim { animation: waterDrop 0.6s linear infinite; }
+
+        /* Character Walk Smooth Transition */
+        #sonali-container {
+            transition: left 0.85s cubic-bezier(0.4, 0, 0.2, 1), transform 0.35s ease;
+        }
+
+        /* 3D Kid-Friendly Buttons */
+        .btn-kid {
+            transition: all 0.15s ease;
+            box-shadow: 0 6px 0 rgba(0,0,0,0.22);
+        }
+        .btn-kid:active:not(:disabled) {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 rgba(0,0,0,0.22);
+        }
+        .btn-kid:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+
+        /* Sapling Interactive Hover */
+        .sapling-spot {
+            cursor: pointer;
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .sapling-spot:hover {
+            transform: scale(1.06);
+        }
+        .sapling-spot:active {
+            transform: scale(0.95);
+        }
+
+        /* Confetti Styling */
+        .confetti {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+            pointer-events: none;
+            z-index: 40;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between p-2 sm:p-4 md:p-6">
+
+    <!-- Top Header & Step Progress -->
+    <header class="w-full max-w-5xl mx-auto flex flex-col gap-2.5 bg-white/95 backdrop-blur-md px-4 py-3 rounded-3xl shadow-md border-4 border-emerald-400">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-3">
+                <div id="story-icon" class="w-11 h-11 rounded-2xl bg-emerald-500 flex items-center justify-center text-white text-2xl shadow-inner">
+                    🌱
+                </div>
+                <div>
+                    <h1 id="header-title" class="text-lg sm:text-xl md:text-2xl font-extrabold text-emerald-800 leading-tight">
+                        সোনালির গাছ লাগানোর গল্প
+                    </h1>
+                    <p class="text-xs sm:text-sm text-emerald-600 font-semibold">
+                        বার বার যোগের ধারণা ও অনুশীলন (ধাপ ১ - ৩০)
+                    </p>
+                </div>
+            </div>
+
+            <!-- Story Quick Switcher Pills -->
+            <div class="flex flex-wrap items-center gap-1.5 bg-slate-100 p-1 rounded-2xl border-2 border-slate-300">
+                <button id="tab-story-1" onclick="goToStep(0)" class="px-2.5 sm:px-3 py-1 rounded-xl font-extrabold text-xs sm:text-sm transition-all bg-emerald-500 text-white shadow">
+                    🌱 গাছ (১+১)
+                </button>
+                <button id="tab-story-2" onclick="goToStep(6)" class="px-2.5 sm:px-3 py-1 rounded-xl font-extrabold text-xs sm:text-sm transition-all text-slate-700 hover:bg-amber-100">
+                    🍌 কলা (২+২)
+                </button>
+                <button id="tab-story-3" onclick="goToStep(12)" class="px-2.5 sm:px-3 py-1 rounded-xl font-extrabold text-xs sm:text-sm transition-all text-slate-700 hover:bg-rose-100">
+                    🍎 ফল (রমলা)
+                </button>
+                <button id="tab-story-4" onclick="goToStep(24)" class="px-2.5 sm:px-3 py-1 rounded-xl font-extrabold text-xs sm:text-sm transition-all text-slate-700 hover:bg-purple-100">
+                    ✏️ অনুশীলন
+                </button>
+            </div>
+
+            <!-- Audio & Voice Controls -->
+            <div class="flex items-center gap-2">
+                <button id="btn-speak" onclick="speakCurrentLine()" title="আবার শোনো" class="btn-kid bg-amber-400 hover:bg-amber-500 text-amber-950 font-bold px-3.5 py-1.5 rounded-2xl flex items-center gap-1.5 text-sm sm:text-base border-2 border-amber-600">
+                    <i class="fas fa-volume-up text-lg"></i>
+                    <span class="hidden sm:inline">পড়ে শোনাও</span>
+                </button>
+                <button id="btn-mute" onclick="toggleSound()" title="শব্দ চালু/বন্ধ" class="btn-kid bg-sky-100 hover:bg-sky-200 text-sky-800 font-bold p-2 rounded-2xl border-2 border-sky-400">
+                    <i id="mute-icon" class="fas fa-music text-lg"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Step Indicators (1 to 33) -->
+        <div class="flex flex-wrap items-center justify-center gap-1 sm:gap-1.5 pt-1 border-t border-slate-200 overflow-x-auto max-h-16" id="step-dots">
+            <!-- Dynamically populated 1 to 33 -->
+        </div>
+    </header>
+
+    <!-- Main Story & Animation Stage -->
+    <main class="w-full max-w-5xl mx-auto my-3 flex-1 flex flex-col gap-3">
+
+        <!-- Story Line Display Banner (Strictly the exact lines) -->
+        <div class="relative bg-amber-50 border-4 border-amber-400 rounded-3xl p-4 sm:p-5 shadow-lg text-center flex flex-col items-center justify-center min-h-[115px] sm:min-h-[135px]">
+            <span id="step-badge" class="absolute -top-3.5 left-6 bg-emerald-600 text-white text-xs sm:text-sm font-bold px-3.5 py-0.5 rounded-full shadow">
+                ধাপ ১ / ৩৩
+            </span>
+
+            <!-- Strictly matching the prompt's lines -->
+            <h2 id="story-text" class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold text-slate-800 tracking-wide leading-snug transition-all duration-300 px-2">
+                সোনালি গাছ লাগাতে ভালোবাসে।
+            </h2>
+
+            <!-- Subtle helper hint for teachers/students -->
+            <p id="teacher-hint" class="text-xs sm:text-sm text-emerald-700 font-semibold mt-2 bg-emerald-100/80 px-3 py-1 rounded-full">
+                💡 নিচের "পরবর্তী ধাপ" বাটনে ক্লিক করে গল্পটি এগিয়ে নিন
+            </p>
+        </div>
+
+        <!-- Interactive Visual Canvas -->
+        <div id="garden-stage" class="relative w-full h-[360px] sm:h-[420px] md:h-[445px] rounded-3xl overflow-hidden shadow-xl border-4 border-emerald-500 bg-gradient-to-b from-sky-300 via-sky-200 to-emerald-200 select-none">
+
+            <!-- Confetti Layer -->
+            <div id="confetti-layer" class="absolute inset-0 pointer-events-none overflow-hidden z-40"></div>
+
+            <!-- Animated Smiling Sun -->
+            <div class="absolute top-4 right-5 sm:right-8 w-14 h-14 sm:w-20 sm:h-20 z-10 pointer-events-none">
+                <svg viewBox="0 0 100 100" class="w-full h-full overflow-visible">
+                    <g class="animate-sun" style="transform-origin: 50px 50px;">
+                        <line x1="50" y1="2" x2="50" y2="14" stroke="#f59e0b" stroke-width="5" stroke-linecap="round"/>
+                        <line x1="50" y1="86" x2="50" y2="98" stroke="#f59e0b" stroke-width="5" stroke-linecap="round"/>
+                        <line x1="2" y1="50" x2="14" y2="50" stroke="#f59e0b" stroke-width="5" stroke-linecap="round"/>
+                        <line x1="86" y1="50" x2="98" y2="50" stroke="#f59e0b" stroke-width="5" stroke-linecap="round"/>
+                        <line x1="16" y1="16" x2="25" y2="25" stroke="#f59e0b" stroke-width="5" stroke-linecap="round"/>
+                        <line x1="75" y1="75" x2="84" y2="84" stroke="#f59e0b" stroke-width="5" stroke-linecap="round"/>
+                        <line x1="84" y1="16" x2="75" y2="25" stroke="#f59e0b" stroke-width="5" stroke-linecap="round"/>
+                        <line x1="25" y1="75" x2="16" y2="84" stroke="#f59e0b" stroke-width="5" stroke-linecap="round"/>
+                    </g>
+                    <circle cx="50" cy="50" r="28" fill="#fde047" stroke="#f59e0b" stroke-width="4"/>
+                    <circle cx="41" cy="45" r="3.5" fill="#78350f"/>
+                    <circle cx="59" cy="45" r="3.5" fill="#78350f"/>
+                    <path d="M 40 55 Q 50 64 60 55" fill="none" stroke="#78350f" stroke-width="3.5" stroke-linecap="round"/>
+                </svg>
+            </div>
+
+            <!-- Drifting Clouds -->
+            <div class="absolute top-6 left-8 sm:left-16 animate-cloud opacity-90 pointer-events-none z-10">
+                <svg width="95" height="50" viewBox="0 0 95 50">
+                    <path d="M25 42 H75 A14 14 0 0 0 75 16 A18 18 0 0 0 42 10 A16 16 0 0 0 25 42 Z" fill="#ffffff"/>
+                </svg>
+            </div>
+            <div class="absolute top-14 left-1/2 -translate-x-1/2 animate-cloud opacity-80 pointer-events-none z-10" style="animation-delay: -3s;">
+                <svg width="75" height="40" viewBox="0 0 95 50">
+                    <path d="M25 42 H75 A14 14 0 0 0 75 16 A18 18 0 0 0 42 10 A16 16 0 0 0 25 42 Z" fill="#ffffff"/>
+                </svg>
+            </div>
+
+            <!-- Floating Math Equation & Visual Counters Overlay (Shared across stories) -->
+            <div id="math-overlay" class="absolute top-3 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center pointer-events-none w-11/12 max-w-xl">
+                <!-- Question Bubble -->
+                <div id="question-bubble" class="hidden bg-white/95 border-4 border-purple-500 rounded-3xl px-5 py-2.5 shadow-xl flex items-center gap-3 animate-pop">
+                    <span class="text-3xl sm:text-4xl animate-bounce">🤔</span>
+                    <div class="text-left">
+                        <p id="question-title" class="text-base sm:text-xl font-extrabold text-purple-800">চলো তো একসাথে গুনে দেখি!</p>
+                        <p id="question-sub" class="text-xs sm:text-sm font-bold text-purple-600">ওপর ক্লিক করে গুনতে পারো!</p>
+                    </div>
+                    <span class="text-3xl sm:text-4xl font-black text-pink-600 animate-bounce">❓</span>
+                </div>
+
+                <!-- Equation Board for Steps 4, 5 & Steps 10, 11 -->
+                <div id="equation-board" class="hidden bg-white/95 border-4 border-amber-500 rounded-3xl px-5 py-2.5 shadow-2xl flex flex-col items-center gap-1.5 animate-pop">
+                    <div class="flex items-center gap-2 sm:gap-3.5 text-2xl sm:text-4xl font-black">
+                        <span id="eq-num-1" class="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-emerald-100 border-3 border-emerald-500 text-emerald-800 flex items-center justify-center shadow">১</span>
+                        <span class="text-amber-600">+</span>
+                        <span id="eq-num-2" class="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-emerald-100 border-3 border-emerald-500 text-emerald-800 flex items-center justify-center shadow">১</span>
+                        <span class="text-amber-600">+</span>
+                        <span id="eq-num-3" class="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-emerald-100 border-3 border-emerald-500 text-emerald-800 flex items-center justify-center shadow">১</span>
+                        <span class="text-amber-600">=</span>
+                        <span id="eq-total" class="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-amber-400 border-4 border-amber-600 text-amber-950 flex items-center justify-center shadow-lg scale-110">৩</span>
+                    </div>
+                    <div id="step5-explainer" class="hidden bg-amber-100 border-2 border-amber-400 rounded-2xl px-3.5 py-1 text-center">
+                        <span id="step5-explainer-text" class="text-xs sm:text-base font-extrabold text-amber-900">
+                            🌱 (১ম বার ১) + 🌱 (২য় বার ১) + 🌱 (৩য় বার ১) = মোট ৩টি চারা!
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Dynamic Equation Board for Story 3 -->
+                <div id="s3-equation-board" class="hidden bg-white/95 border-4 border-amber-500 rounded-3xl px-4 py-2 shadow-2xl flex flex-col items-center gap-1.5 animate-pop">
+                    <div id="s3-eq-row" class="flex flex-wrap items-center justify-center gap-1 sm:gap-2 text-lg sm:text-2xl md:text-3xl font-black">
+                    </div>
+                    <div id="s3-explainer" class="hidden bg-amber-100 border-2 border-amber-400 rounded-2xl px-3 py-0.5 text-center">
+                        <span id="s3-explainer-text" class="text-xs sm:text-sm font-extrabold text-amber-900"></span>
+                    </div>
+                </div>
+
+                <!-- Final Banner -->
+                <div id="final-banner" class="hidden bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 text-white border-4 border-yellow-300 rounded-3xl px-5 py-2 shadow-2xl flex items-center gap-2.5 animate-pop">
+                    <span class="text-2xl sm:text-3xl">🎉</span>
+                    <span id="final-banner-text" class="text-lg sm:text-2xl font-black tracking-wide">মোট ৩টি নতুন গাছের চারা! (১, ২, ৩)</span>
+                    <span id="final-banner-icon" class="text-2xl sm:text-3xl">🌸</span>
+                </div>
+            </div>
+
+            <!-- Distant Background Hills -->
+            <svg class="absolute bottom-24 left-0 w-full h-28 pointer-events-none" preserveAspectRatio="none" viewBox="0 0 1000 120">
+                <path d="M0,120 L0,65 Q220,5 480,65 T1000,45 L1000,120 Z" fill="#86efac" opacity="0.7"/>
+                <path d="M0,120 L0,85 Q350,25 680,75 T1000,60 L1000,120 Z" fill="#4ade80" opacity="0.85"/>
+            </svg>
+
+            <!-- Foreground Floor -->
+            <div id="stage-floor" class="absolute bottom-0 left-0 w-full h-28 bg-gradient-to-b from-emerald-500 to-emerald-700 border-t-4 border-emerald-600"></div>
+
+            <!-- =========================================================
+                 SCENE 1: SONALI & SAPLINGS (STEPS 1 TO 6)
+                 ========================================================= -->
+            <div id="scene-story-1" class="absolute inset-0">
+                <div id="butterflies-group" class="absolute inset-0 pointer-events-none">
+                    <div class="absolute top-24 left-1/4 animate-butterfly text-2xl sm:text-3xl">🦋</div>
+                    <div class="absolute top-20 right-1/3 animate-butterfly text-2xl sm:text-3xl" style="animation-delay: -2.2s;">🦋</div>
+                </div>
+
+                <div id="sonali-container" class="absolute bottom-16 left-[8%] z-20 w-28 sm:w-36 h-40 sm:h-48 pointer-events-none flex flex-col items-center">
+                    <div id="sonali-bubble" class="mb-1 bg-white px-3 py-1 rounded-2xl shadow-md border-2 border-pink-400 text-xs sm:text-sm font-extrabold text-pink-600 flex items-center gap-1 animate-float whitespace-nowrap">
+                        <span>আমি সোনালি!</span> <span>❤️🌱</span>
+                    </div>
+
+                    <svg viewBox="0 0 140 175" class="w-full h-full drop-shadow-md overflow-visible">
+                        <circle cx="32" cy="42" r="13" fill="#1e293b"/>
+                        <circle cx="98" cy="42" r="13" fill="#1e293b"/>
+                        <circle cx="40" cy="38" r="4" fill="#f43f5e"/>
+                        <circle cx="90" cy="38" r="4" fill="#f43f5e"/>
+                        <circle cx="65" cy="46" r="24" fill="#fed7aa" stroke="#c2410c" stroke-width="2.5"/>
+                        <path d="M 41 42 Q 65 20 89 42 Q 77 27 65 32 Q 52 27 41 42 Z" fill="#1e293b"/>
+                        <circle cx="56" cy="46" r="3.2" fill="#1e293b"/>
+                        <circle cx="74" cy="46" r="3.2" fill="#1e293b"/>
+                        <ellipse cx="49" cy="52" rx="4.5" ry="2.5" fill="#fb7185" opacity="0.65"/>
+                        <ellipse cx="81" cy="52" rx="4.5" ry="2.5" fill="#fb7185" opacity="0.65"/>
+                        <path d="M 55 55 Q 65 65 75 55" fill="none" stroke="#9a3412" stroke-width="3" stroke-linecap="round"/>
+                        <rect x="60" y="69" width="10" height="8" fill="#fed7aa"/>
+                        <path d="M 46 75 L 84 75 L 98 132 L 32 132 Z" fill="#ec4899" stroke="#9d174d" stroke-width="2.5" stroke-linejoin="round"/>
+                        <path d="M 52 75 Q 65 86 78 75" fill="none" stroke="#fef08a" stroke-width="4" stroke-linecap="round"/>
+                        <circle cx="65" cy="103" r="7" fill="#fef08a"/>
+                        <circle cx="65" cy="103" r="3" fill="#f97316"/>
+                        <path d="M 48 80 Q 28 92 26 74" fill="none" stroke="#fed7aa" stroke-width="8" stroke-linecap="round"/>
+                        <path d="M 82 80 Q 102 92 108 86" fill="none" stroke="#fed7aa" stroke-width="8" stroke-linecap="round"/>
+                        <g id="watering-can" transform="translate(96, 72)">
+                            <rect x="4" y="8" width="24" height="20" rx="5" fill="#38bdf8" stroke="#0284c7" stroke-width="2"/>
+                            <path d="M 8 8 Q 16 -4 24 8" fill="none" stroke="#0284c7" stroke-width="3"/>
+                            <path d="M 28 14 L 40 6" stroke="#0284c7" stroke-width="4" stroke-linecap="round"/>
+                            <ellipse cx="41" cy="5" rx="3" ry="5" transform="rotate(-25 41 5)" fill="#fde047" stroke="#ca8a04" stroke-width="1.5"/>
+                            <g id="water-drops" class="hidden">
+                                <circle cx="46" cy="12" r="2.5" fill="#0ea5e9" class="water-drop-anim"/>
+                                <circle cx="52" cy="18" r="2.5" fill="#0ea5e9" class="water-drop-anim" style="animation-delay: 0.2s;"/>
+                                <circle cx="43" cy="20" r="2.5" fill="#0ea5e9" class="water-drop-anim" style="animation-delay: 0.4s;"/>
+                            </g>
+                        </g>
+                        <rect x="50" y="132" width="9" height="24" rx="4" fill="#fed7aa"/>
+                        <rect x="71" y="132" width="9" height="24" rx="4" fill="#fed7aa"/>
+                        <ellipse cx="54" cy="158" rx="9" ry="5" fill="#facc15" stroke="#854d0e" stroke-width="2"/>
+                        <ellipse cx="76" cy="158" rx="9" ry="5" fill="#facc15" stroke="#854d0e" stroke-width="2"/>
+                    </svg>
+                </div>
+
+                <div class="absolute bottom-3 left-0 w-full px-4 sm:px-12 flex justify-end sm:justify-around items-end z-20">
+                    <div class="w-20 sm:w-28 hidden sm:block"></div>
+
+                    <!-- SPOT 1 -->
+                    <div id="spot-1" onclick="interactWithSapling(1)" class="sapling-spot flex flex-col items-center w-28 sm:w-36 relative">
+                        <div id="plus-1-2" class="hidden absolute -right-5 sm:-right-10 bottom-14 text-3xl sm:text-5xl font-black text-amber-300 drop-shadow-[0_3px_3px_rgba(0,0,0,0.5)] animate-pop">+</div>
+                        <div id="top-count-1" class="hidden mb-1 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-pink-500 border-3 border-white text-white font-black text-xl sm:text-2xl flex items-center justify-center shadow-lg animate-pop">১</div>
+                        <div id="sapling-1" class="hidden w-20 h-24 sm:w-24 sm:h-28 -mb-3 z-10">
+                            <svg viewBox="0 0 100 115" class="w-full h-full overflow-visible">
+                                <path d="M 50 105 Q 48 65 50 35" fill="none" stroke="#15803d" stroke-width="7" stroke-linecap="round"/>
+                                <path d="M 50 75 Q 15 65 20 42 Q 45 45 50 75 Z" fill="#22c55e" stroke="#166534" stroke-width="2.5"/>
+                                <path d="M 50 62 Q 85 52 80 28 Q 55 32 50 62 Z" fill="#4ade80" stroke="#166534" stroke-width="2.5"/>
+                                <path d="M 50 40 Q 35 15 50 5 Q 65 15 50 40 Z" fill="#86efac" stroke="#166534" stroke-width="2.5"/>
+                                <g id="flower-1" class="hidden animate-pop" style="transform-origin: 50px 12px;">
+                                    <circle cx="50" cy="4" r="7" fill="#f472b6"/><circle cx="58" cy="12" r="7" fill="#f472b6"/><circle cx="50" cy="20" r="7" fill="#f472b6"/><circle cx="42" cy="12" r="7" fill="#f472b6"/><circle cx="50" cy="12" r="5" fill="#facc15"/>
+                                </g>
+                            </svg>
+                        </div>
+                        <svg viewBox="0 0 120 40" class="w-24 sm:w-32 h-9 sm:h-11">
+                            <ellipse cx="60" cy="25" rx="52" ry="13" fill="#78350f" stroke="#451a03" stroke-width="3"/>
+                            <ellipse cx="60" cy="22" rx="40" ry="8" fill="#92400e"/>
+                        </svg>
+                        <span class="text-[11px] sm:text-xs font-bold text-emerald-950 bg-emerald-200/90 px-2.5 py-0.5 rounded-full -mt-1 mb-1">১ম জায়গা</span>
+                        <div id="label-1" class="opacity-0 transition-all duration-300 w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-yellow-300 border-4 border-amber-600 text-amber-950 font-black text-2xl sm:text-3xl flex items-center justify-center shadow-lg">১</div>
+                    </div>
+
+                    <!-- SPOT 2 -->
+                    <div id="spot-2" onclick="interactWithSapling(2)" class="sapling-spot flex flex-col items-center w-28 sm:w-36 relative">
+                        <div id="plus-2-3" class="hidden absolute -right-5 sm:-right-10 bottom-14 text-3xl sm:text-5xl font-black text-amber-300 drop-shadow-[0_3px_3px_rgba(0,0,0,0.5)] animate-pop">+</div>
+                        <div id="top-count-2" class="hidden mb-1 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-pink-500 border-3 border-white text-white font-black text-xl sm:text-2xl flex items-center justify-center shadow-lg animate-pop">২</div>
+                        <div id="sapling-2" class="hidden w-20 h-24 sm:w-24 sm:h-28 -mb-3 z-10">
+                            <svg viewBox="0 0 100 115" class="w-full h-full overflow-visible">
+                                <path d="M 50 105 Q 52 65 50 35" fill="none" stroke="#15803d" stroke-width="7" stroke-linecap="round"/>
+                                <path d="M 50 75 Q 15 65 20 42 Q 45 45 50 75 Z" fill="#22c55e" stroke="#166534" stroke-width="2.5"/>
+                                <path d="M 50 62 Q 85 52 80 28 Q 55 32 50 62 Z" fill="#4ade80" stroke="#166534" stroke-width="2.5"/>
+                                <path d="M 50 40 Q 35 15 50 5 Q 65 15 50 40 Z" fill="#86efac" stroke="#166534" stroke-width="2.5"/>
+                                <g id="flower-2" class="hidden animate-pop" style="transform-origin: 50px 12px;">
+                                    <circle cx="50" cy="4" r="7" fill="#fb7185"/><circle cx="58" cy="12" r="7" fill="#fb7185"/><circle cx="50" cy="20" r="7" fill="#fb7185"/><circle cx="42" cy="12" r="7" fill="#fb7185"/><circle cx="50" cy="12" r="5" fill="#fef08a"/>
+                                </g>
+                            </svg>
+                        </div>
+                        <svg viewBox="0 0 120 40" class="w-24 sm:w-32 h-9 sm:h-11">
+                            <ellipse cx="60" cy="25" rx="52" ry="13" fill="#78350f" stroke="#451a03" stroke-width="3"/>
+                            <ellipse cx="60" cy="22" rx="40" ry="8" fill="#92400e"/>
+                        </svg>
+                        <span class="text-[11px] sm:text-xs font-bold text-emerald-950 bg-emerald-200/90 px-2.5 py-0.5 rounded-full -mt-1 mb-1">২য় জায়গা</span>
+                        <div id="label-2" class="opacity-0 transition-all duration-300 w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-yellow-300 border-4 border-amber-600 text-amber-950 font-black text-2xl sm:text-3xl flex items-center justify-center shadow-lg">১</div>
+                    </div>
+
+                    <!-- SPOT 3 -->
+                    <div id="spot-3" onclick="interactWithSapling(3)" class="sapling-spot flex flex-col items-center w-28 sm:w-36 relative">
+                        <div id="top-count-3" class="hidden mb-1 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-pink-500 border-3 border-white text-white font-black text-xl sm:text-2xl flex items-center justify-center shadow-lg animate-pop">৩</div>
+                        <div id="sapling-3" class="hidden w-20 h-24 sm:w-24 sm:h-28 -mb-3 z-10">
+                            <svg viewBox="0 0 100 115" class="w-full h-full overflow-visible">
+                                <path d="M 50 105 Q 49 65 50 35" fill="none" stroke="#15803d" stroke-width="7" stroke-linecap="round"/>
+                                <path d="M 50 75 Q 15 65 20 42 Q 45 45 50 75 Z" fill="#22c55e" stroke="#166534" stroke-width="2.5"/>
+                                <path d="M 50 62 Q 85 52 80 28 Q 55 32 50 62 Z" fill="#4ade80" stroke="#166534" stroke-width="2.5"/>
+                                <path d="M 50 40 Q 35 15 50 5 Q 65 15 50 40 Z" fill="#86efac" stroke="#166534" stroke-width="2.5"/>
+                                <g id="flower-3" class="hidden animate-pop" style="transform-origin: 50px 12px;">
+                                    <circle cx="50" cy="4" r="7" fill="#c084fc"/><circle cx="58" cy="12" r="7" fill="#c084fc"/><circle cx="50" cy="20" r="7" fill="#c084fc"/><circle cx="42" cy="12" r="7" fill="#c084fc"/><circle cx="50" cy="12" r="5" fill="#fde047"/>
+                                </g>
+                            </svg>
+                        </div>
+                        <svg viewBox="0 0 120 40" class="w-24 sm:w-32 h-9 sm:h-11">
+                            <ellipse cx="60" cy="25" rx="52" ry="13" fill="#78350f" stroke="#451a03" stroke-width="3"/>
+                            <ellipse cx="60" cy="22" rx="40" ry="8" fill="#92400e"/>
+                        </svg>
+                        <span class="text-[11px] sm:text-xs font-bold text-emerald-950 bg-emerald-200/90 px-2.5 py-0.5 rounded-full -mt-1 mb-1">৩য় জায়গা</span>
+                        <div id="label-3" class="opacity-0 transition-all duration-300 w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-yellow-300 border-4 border-amber-600 text-amber-950 font-black text-2xl sm:text-3xl flex items-center justify-center shadow-lg">১</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- =========================================================
+                 SCENE 2: DOCTOR KAKU, HAREN, DAVID, NAJMA & BANANAS (STEPS 7 TO 12)
+                 ========================================================= -->
+            <div id="scene-story-2" class="hidden absolute inset-0">
+                <div id="doctor-container" class="absolute bottom-14 left-2 sm:left-5 z-20 w-24 sm:w-32 h-40 sm:h-48 pointer-events-none flex flex-col items-center transition-all duration-500">
+                    <div id="doctor-bubble" class="mb-1 bg-white px-2.5 py-1 rounded-2xl shadow-md border-2 border-sky-500 text-[11px] sm:text-xs font-extrabold text-sky-800 flex items-center gap-1 animate-float whitespace-nowrap">
+                        <span>কলা খেলে শক্তি বাড়ে!</span> <span>💪🍌</span>
+                    </div>
+                    <svg viewBox="0 0 130 175" class="w-full h-full drop-shadow-md overflow-visible">
+                        <path d="M 38 42 Q 65 18 92 42 Z" fill="#334155"/>
+                        <circle cx="65" cy="48" r="23" fill="#fed7aa" stroke="#9a3412" stroke-width="2.5"/>
+                        <rect x="46" y="41" width="15" height="10" rx="3" fill="none" stroke="#0f172a" stroke-width="2.5"/>
+                        <rect x="69" y="41" width="15" height="10" rx="3" fill="none" stroke="#0f172a" stroke-width="2.5"/>
+                        <line x1="61" y1="46" x2="69" y2="46" stroke="#0f172a" stroke-width="2.5"/>
+                        <circle cx="53.5" cy="46" r="2.5" fill="#0f172a"/>
+                        <circle cx="76.5" cy="46" r="2.5" fill="#0f172a"/>
+                        <path d="M 54 58 Q 65 66 76 58" fill="none" stroke="#7c2d12" stroke-width="3" stroke-linecap="round"/>
+                        <path d="M 40 72 L 90 72 L 96 135 L 34 135 Z" fill="#ffffff" stroke="#64748b" stroke-width="2.5" stroke-linejoin="round"/>
+                        <polygon points="56,72 74,72 65,98" fill="#bae6fd"/>
+                        <polygon points="63,74 67,74 68,94 65,98 62,94" fill="#ef4444"/>
+                        <path d="M 50 72 Q 50 102 65 102 Q 80 102 80 72" fill="none" stroke="#0284c7" stroke-width="4" stroke-linecap="round"/>
+                        <circle cx="65" cy="106" r="6" fill="#fbbf24" stroke="#0284c7" stroke-width="2.5"/>
+                        <rect x="73" y="85" width="12" height="12" rx="2" fill="#fee2e2" stroke="#ef4444" stroke-width="1.5"/>
+                        <line x1="79" y1="88" x2="79" y2="94" stroke="#ef4444" stroke-width="2.5"/>
+                        <line x1="76" y1="91" x2="82" y2="91" stroke="#ef4444" stroke-width="2.5"/>
+                        <path d="M 40 76 Q 22 90 28 70" fill="none" stroke="#ffffff" stroke-width="9" stroke-linecap="round"/>
+                        <path d="M 90 76 Q 106 88 100 72" fill="none" stroke="#ffffff" stroke-width="9" stroke-linecap="round"/>
+                        <rect x="49" y="135" width="10" height="22" rx="3" fill="#334155"/>
+                        <rect x="71" y="135" width="10" height="22" rx="3" fill="#334155"/>
+                    </svg>
+                    <span class="bg-sky-700 text-white text-[11px] sm:text-xs font-extrabold px-2.5 py-0.5 rounded-full -mt-2 shadow">
+                        ডাক্তার কাকু
+                    </span>
+                </div>
+
+                <div id="kids-row" class="absolute bottom-2 right-0 left-20 sm:left-32 px-2 sm:px-6 flex justify-around items-end z-20 transition-all duration-500">
+                    <!-- CHILD 1 -->
+                    <div id="kid-card-1" class="flex flex-col items-center w-28 sm:w-40 relative">
+                        <div id="b-plus-1-2" class="hidden absolute -right-4 sm:-right-8 bottom-16 text-3xl sm:text-5xl font-black text-amber-300 drop-shadow-[0_3px_3px_rgba(0,0,0,0.5)] animate-pop z-30">+</div>
+                        <div id="energy-1" class="hidden mb-1 bg-amber-400 text-amber-950 font-black text-xs px-2.5 py-0.5 rounded-full border-2 border-white shadow animate-bounce">
+                            ⚡ শক্তি!
+                        </div>
+                        <div id="kid-svg-1" class="w-16 h-24 sm:w-20 sm:h-28 -mb-2 transition-transform duration-300">
+                            <svg viewBox="0 0 100 130" class="w-full h-full overflow-visible">
+                                <circle cx="50" cy="36" r="20" fill="#fdba74" stroke="#9a3412" stroke-width="2.5"/>
+                                <path d="M 30 32 Q 50 12 70 32 Q 50 22 30 32 Z" fill="#1e293b"/>
+                                <circle cx="43" cy="36" r="2.8" fill="#1e293b"/><circle cx="57" cy="36" r="2.8" fill="#1e293b"/>
+                                <path d="M 42 44 Q 50 52 58 44" fill="none" stroke="#9a3412" stroke-width="2.8" stroke-linecap="round"/>
+                                <rect x="33" y="56" width="34" height="40" rx="8" fill="#f97316" stroke="#c2410c" stroke-width="2.5"/>
+                                <path d="M 33 62 L 18 76" stroke="#fdba74" stroke-width="7" stroke-linecap="round"/>
+                                <path d="M 67 62 L 82 76" stroke="#fdba74" stroke-width="7" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <span class="bg-orange-600 text-white text-xs sm:text-sm font-extrabold px-3 py-0.5 rounded-full shadow z-10 mb-1">
+                            হরেন
+                        </span>
+                        <div class="bg-white/95 border-3 border-amber-500 rounded-2xl px-2 py-1.5 shadow-md flex items-center justify-center gap-1 sm:gap-2 relative">
+                            <div id="banana-1" onclick="interactWithBanana(1)" class="sapling-spot relative flex flex-col items-center p-0.5">
+                                <span id="b-count-1" class="hidden absolute -top-6 bg-pink-600 text-white text-xs sm:text-sm font-black w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center border-2 border-white shadow animate-pop z-30">১</span>
+                                <svg viewBox="0 0 60 60" class="w-9 h-9 sm:w-12 sm:h-12 drop-shadow">
+                                    <path d="M 14 46 Q 8 20 38 10 Q 44 8 46 13 Q 26 26 26 48 Q 20 52 14 46 Z" fill="#facc15" stroke="#ca8a04" stroke-width="2.5"/>
+                                    <path d="M 38 10 L 43 6" stroke="#65a30d" stroke-width="4" stroke-linecap="round"/>
+                                </svg>
+                            </div>
+                            <div id="banana-2" onclick="interactWithBanana(2)" class="sapling-spot relative flex flex-col items-center p-0.5">
+                                <span id="b-count-2" class="hidden absolute -top-6 bg-pink-600 text-white text-xs sm:text-sm font-black w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center border-2 border-white shadow animate-pop z-30">২</span>
+                                <svg viewBox="0 0 60 60" class="w-9 h-9 sm:w-12 sm:h-12 drop-shadow">
+                                    <path d="M 14 46 Q 8 20 38 10 Q 44 8 46 13 Q 26 26 26 48 Q 20 52 14 46 Z" fill="#facc15" stroke="#ca8a04" stroke-width="2.5"/>
+                                    <path d="M 38 10 L 43 6" stroke="#65a30d" stroke-width="4" stroke-linecap="round"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div id="b-label-1" class="mt-1.5 transition-all duration-300 w-11 h-11 sm:w-13 sm:h-13 rounded-2xl bg-yellow-300 border-4 border-amber-600 text-amber-950 font-black text-xl sm:text-2xl flex items-center justify-center shadow-lg">
+                            ২
+                        </div>
+                    </div>
+
+                    <!-- CHILD 2 -->
+                    <div id="kid-card-2" class="flex flex-col items-center w-28 sm:w-40 relative">
+                        <div id="b-plus-2-3" class="hidden absolute -right-4 sm:-right-8 bottom-16 text-3xl sm:text-5xl font-black text-amber-300 drop-shadow-[0_3px_3px_rgba(0,0,0,0.5)] animate-pop z-30">+</div>
+                        <div id="energy-2" class="hidden mb-1 bg-amber-400 text-amber-950 font-black text-xs px-2.5 py-0.5 rounded-full border-2 border-white shadow animate-bounce">
+                            ⚡ শক্তি!
+                        </div>
+                        <div id="kid-svg-2" class="w-16 h-24 sm:w-20 sm:h-28 -mb-2 transition-transform duration-300">
+                            <svg viewBox="0 0 100 130" class="w-full h-full overflow-visible">
+                                <circle cx="50" cy="36" r="20" fill="#fed7aa" stroke="#9a3412" stroke-width="2.5"/>
+                                <path d="M 28 30 Q 50 10 72 30 Q 60 18 50 22 Q 40 18 28 30 Z" fill="#78350f"/>
+                                <circle cx="43" cy="36" r="2.8" fill="#1e293b"/><circle cx="57" cy="36" r="2.8" fill="#1e293b"/>
+                                <path d="M 42 44 Q 50 52 58 44" fill="none" stroke="#9a3412" stroke-width="2.8" stroke-linecap="round"/>
+                                <rect x="33" y="56" width="34" height="40" rx="8" fill="#3b82f6" stroke="#1d4ed8" stroke-width="2.5"/>
+                                <path d="M 33 62 L 18 76" stroke="#fed7aa" stroke-width="7" stroke-linecap="round"/>
+                                <path d="M 67 62 L 82 76" stroke="#fed7aa" stroke-width="7" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <span class="bg-blue-600 text-white text-xs sm:text-sm font-extrabold px-3 py-0.5 rounded-full shadow z-10 mb-1">
+                            ডেভিড
+                        </span>
+                        <div class="bg-white/95 border-3 border-amber-500 rounded-2xl px-2 py-1.5 shadow-md flex items-center justify-center gap-1 sm:gap-2 relative">
+                            <div id="banana-3" onclick="interactWithBanana(3)" class="sapling-spot relative flex flex-col items-center p-0.5">
+                                <span id="b-count-3" class="hidden absolute -top-6 bg-pink-600 text-white text-xs sm:text-sm font-black w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center border-2 border-white shadow animate-pop z-30">৩</span>
+                                <svg viewBox="0 0 60 60" class="w-9 h-9 sm:w-12 sm:h-12 drop-shadow">
+                                    <path d="M 14 46 Q 8 20 38 10 Q 44 8 46 13 Q 26 26 26 48 Q 20 52 14 46 Z" fill="#facc15" stroke="#ca8a04" stroke-width="2.5"/>
+                                    <path d="M 38 10 L 43 6" stroke="#65a30d" stroke-width="4" stroke-linecap="round"/>
+                                </svg>
+                            </div>
+                            <div id="banana-4" onclick="interactWithBanana(4)" class="sapling-spot relative flex flex-col items-center p-0.5">
+                                <span id="b-count-4" class="hidden absolute -top-6 bg-pink-600 text-white text-xs sm:text-sm font-black w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center border-2 border-white shadow animate-pop z-30">৪</span>
+                                <svg viewBox="0 0 60 60" class="w-9 h-9 sm:w-12 sm:h-12 drop-shadow">
+                                    <path d="M 14 46 Q 8 20 38 10 Q 44 8 46 13 Q 26 26 26 48 Q 20 52 14 46 Z" fill="#facc15" stroke="#ca8a04" stroke-width="2.5"/>
+                                    <path d="M 38 10 L 43 6" stroke="#65a30d" stroke-width="4" stroke-linecap="round"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div id="b-label-2" class="mt-1.5 transition-all duration-300 w-11 h-11 sm:w-13 sm:h-13 rounded-2xl bg-yellow-300 border-4 border-amber-600 text-amber-950 font-black text-xl sm:text-2xl flex items-center justify-center shadow-lg">
+                            ২
+                        </div>
+                    </div>
+
+                    <!-- CHILD 3 -->
+                    <div id="kid-card-3" class="flex flex-col items-center w-28 sm:w-40 relative">
+                        <div id="energy-3" class="hidden mb-1 bg-amber-400 text-amber-950 font-black text-xs px-2.5 py-0.5 rounded-full border-2 border-white shadow animate-bounce">
+                            ⚡ শক্তি!
+                        </div>
+                        <div id="kid-svg-3" class="w-16 h-24 sm:w-20 sm:h-28 -mb-2 transition-transform duration-300">
+                            <svg viewBox="0 0 100 130" class="w-full h-full overflow-visible">
+                                <circle cx="26" cy="36" r="9" fill="#1e293b"/>
+                                <circle cx="74" cy="36" r="9" fill="#1e293b"/>
+                                <circle cx="50" cy="36" r="20" fill="#fdba74" stroke="#9a3412" stroke-width="2.5"/>
+                                <path d="M 30 32 Q 50 14 70 32 Q 50 22 30 32 Z" fill="#1e293b"/>
+                                <circle cx="43" cy="36" r="2.8" fill="#1e293b"/><circle cx="57" cy="36" r="2.8" fill="#1e293b"/>
+                                <path d="M 42 44 Q 50 52 58 44" fill="none" stroke="#9a3412" stroke-width="2.8" stroke-linecap="round"/>
+                                <path d="M 34 56 L 66 56 L 74 96 L 26 96 Z" fill="#a855f7" stroke="#6b21a8" stroke-width="2.5"/>
+                                <path d="M 33 62 L 18 76" stroke="#fdba74" stroke-width="7" stroke-linecap="round"/>
+                                <path d="M 67 62 L 82 76" stroke="#fdba74" stroke-width="7" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <span class="bg-purple-600 text-white text-xs sm:text-sm font-extrabold px-3 py-0.5 rounded-full shadow z-10 mb-1">
+                            নাজমা
+                        </span>
+                        <div class="bg-white/95 border-3 border-amber-500 rounded-2xl px-2 py-1.5 shadow-md flex items-center justify-center gap-1 sm:gap-2 relative">
+                            <div id="banana-5" onclick="interactWithBanana(5)" class="sapling-spot relative flex flex-col items-center p-0.5">
+                                <span id="b-count-5" class="hidden absolute -top-6 bg-pink-600 text-white text-xs sm:text-sm font-black w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center border-2 border-white shadow animate-pop z-30">৫</span>
+                                <svg viewBox="0 0 60 60" class="w-9 h-9 sm:w-12 sm:h-12 drop-shadow">
+                                    <path d="M 14 46 Q 8 20 38 10 Q 44 8 46 13 Q 26 26 26 48 Q 20 52 14 46 Z" fill="#facc15" stroke="#ca8a04" stroke-width="2.5"/>
+                                    <path d="M 38 10 L 43 6" stroke="#65a30d" stroke-width="4" stroke-linecap="round"/>
+                                </svg>
+                            </div>
+                            <div id="banana-6" onclick="interactWithBanana(6)" class="sapling-spot relative flex flex-col items-center p-0.5">
+                                <span id="b-count-6" class="hidden absolute -top-6 bg-pink-600 text-white text-xs sm:text-sm font-black w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center border-2 border-white shadow animate-pop z-30">৬</span>
+                                <svg viewBox="0 0 60 60" class="w-9 h-9 sm:w-12 sm:h-12 drop-shadow">
+                                    <path d="M 14 46 Q 8 20 38 10 Q 44 8 46 13 Q 26 26 26 48 Q 20 52 14 46 Z" fill="#facc15" stroke="#ca8a04" stroke-width="2.5"/>
+                                    <path d="M 38 10 L 43 6" stroke="#65a30d" stroke-width="4" stroke-linecap="round"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div id="b-label-3" class="mt-1.5 transition-all duration-300 w-11 h-11 sm:w-13 sm:h-13 rounded-2xl bg-yellow-300 border-4 border-amber-600 text-amber-950 font-black text-xl sm:text-2xl flex items-center justify-center shadow-lg">
+                            ২
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- =========================================================
+                 SCENE 3: RAMALA'S FRUIT MARKET (STEPS 13 TO 24)
+                 ========================================================= -->
+            <div id="scene-story-3" class="hidden absolute inset-0">
+                <div id="ramala-container" class="absolute bottom-12 left-2 sm:left-4 z-20 w-24 sm:w-32 h-40 sm:h-48 pointer-events-none flex flex-col items-center transition-all duration-500">
+                    <div id="ramala-bubble" class="mb-1 bg-white px-2.5 py-1 rounded-2xl shadow-md border-2 border-rose-500 text-[11px] sm:text-xs font-extrabold text-rose-700 flex items-center gap-1 animate-float whitespace-nowrap">
+                        <span>বাজার থেকে ফল এনেছি!</span> <span>🧺🍎</span>
+                    </div>
+                    <svg viewBox="0 0 130 175" class="w-full h-full drop-shadow-md overflow-visible">
+                        <circle cx="65" cy="22" r="14" fill="#1e293b"/>
+                        <circle cx="65" cy="48" r="23" fill="#fed7aa" stroke="#9a3412" stroke-width="2.5"/>
+                        <path d="M 42 42 Q 65 20 88 42 Q 65 30 42 42 Z" fill="#1e293b"/>
+                        <circle cx="65" cy="39" r="3" fill="#e11d48"/>
+                        <circle cx="55" cy="47" r="2.8" fill="#0f172a"/>
+                        <circle cx="75" cy="47" r="2.8" fill="#0f172a"/>
+                        <path d="M 55 57 Q 65 65 75 57" fill="none" stroke="#9a3412" stroke-width="3" stroke-linecap="round"/>
+                        <path d="M 42 72 L 88 72 L 98 142 L 32 142 Z" fill="#e11d48" stroke="#9f1239" stroke-width="2.5" stroke-linejoin="round"/>
+                        <path d="M 46 72 L 82 142" stroke="#fde047" stroke-width="7" stroke-linecap="round"/>
+                        <rect x="32" y="134" width="66" height="8" rx="2" fill="#fde047"/>
+                        <path d="M 42 78 Q 22 92 32 104" fill="none" stroke="#fed7aa" stroke-width="8" stroke-linecap="round"/>
+                        <path d="M 88 78 Q 108 92 98 104" fill="none" stroke="#fed7aa" stroke-width="8" stroke-linecap="round"/>
+                        <path d="M 84 102 L 116 102 L 110 124 L 90 124 Z" fill="#d97706" stroke="#78350f" stroke-width="2"/>
+                        <path d="M 88 102 Q 100 84 112 102" fill="none" stroke="#78350f" stroke-width="3"/>
+                    </svg>
+                    <span class="bg-rose-700 text-white text-[11px] sm:text-xs font-extrabold px-3 py-0.5 rounded-full -mt-2 shadow">
+                        রমলা
+                    </span>
+                </div>
+
+                <div id="ramala-baskets-area" class="absolute bottom-2 right-1 left-24 sm:left-36 px-1 sm:px-3 flex justify-around items-end z-20">
+                </div>
+            </div>
+
+            <!-- =========================================================
+                 SCENE 4: PRACTICE EXERCISE (STEPS 25 TO 30)
+                 ========================================================= -->
+            <div id="scene-exercise" class="hidden absolute inset-0 flex flex-col items-center justify-center p-4 z-20">
+                <div class="bg-white/95 border-4 border-purple-500 rounded-3xl p-4 sm:p-6 shadow-2xl max-w-lg w-full text-center flex flex-col gap-3 animate-pop">
+                    <div class="flex items-center justify-center gap-2">
+                        <span class="text-3xl">✏️</span>
+                        <h3 id="ex-title" class="text-lg sm:text-2xl font-black text-purple-900">অনুশীলন: সঠিক উত্তর বাছাই করো</h3>
+                    </div>
+
+                    <div id="ex-question-box" class="bg-purple-50 border-3 border-purple-300 rounded-2xl p-3 flex flex-col items-center gap-2">
+                        <p id="ex-problem-text" class="text-lg sm:text-xl font-extrabold text-slate-800">৩টি করে ৫ বার = কত?</p>
+                        <div id="ex-visual-icons" class="flex gap-2 text-2xl">🍏 🍏 🍏 🍏 🍏</div>
+                    </div>
+
+                    <div id="ex-options-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                        <!-- Dynamically populated options -->
+                    </div>
+
+                    <div id="ex-feedback" class="hidden font-extrabold text-base sm:text-lg px-3 py-1.5 rounded-xl">
+                        🎉 অসাধারণ! সঠিক উত্তর!
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bottom Interactive Controls Bar -->
+    <footer class="w-full max-w-5xl mx-auto bg-white/95 backdrop-blur-md p-3 sm:p-4 rounded-3xl shadow-lg border-4 border-emerald-400 flex flex-wrap items-center justify-center sm:justify-between gap-3">
+        <div class="flex items-center gap-2 sm:gap-3">
+            <button id="btn-prev" onclick="prevStep()" class="btn-kid bg-slate-200 hover:bg-slate-300 text-slate-800 font-extrabold px-4 sm:px-6 py-2.5 sm:py-3 rounded-2xl text-base sm:text-xl flex items-center gap-2 border-2 border-slate-400">
+                <i class="fas fa-arrow-left"></i>
+                <span>আগের ধাপ</span>
+            </button>
+
+            <button id="btn-next" onclick="nextStep()" class="btn-kid bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold px-5 sm:px-8 py-2.5 sm:py-3 rounded-2xl text-base sm:text-xl flex items-center gap-2 border-2 border-emerald-700">
+                <span>পরবর্তী ধাপ</span>
+                <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+
+        <div class="flex items-center gap-2 sm:gap-3">
+            <button id="btn-autoplay" onclick="toggleAutoPlay()" class="btn-kid bg-purple-500 hover:bg-purple-600 text-white font-extrabold px-4 sm:px-5 py-2.5 sm:py-3 rounded-2xl text-base sm:text-lg flex items-center gap-2 border-2 border-purple-700">
+                <i id="autoplay-icon" class="fas fa-play"></i>
+                <span id="autoplay-text">অটো প্লে</span>
+            </button>
+
+            <button id="btn-restart" onclick="restartStory()" class="btn-kid bg-rose-500 hover:bg-rose-600 text-white font-extrabold px-4 sm:px-5 py-2.5 sm:py-3 rounded-2xl text-base sm:text-lg flex items-center gap-2 border-2 border-rose-700">
+                <i class="fas fa-redo-alt"></i>
+                <span>আবার শুরু করো</span>
+            </button>
+        </div>
+    </footer>
+
+    <script>
+        /* ==========================================
+         * 33 STORY & EXERCISE STEPS DATA
+         * ========================================== */
+        const storySteps = [
+            // STORY 1: SONALI'S SAPLINGS (Steps 1 - 6)
+            { step: 1, story: 1, text: "সোনালি গাছ লাগাতে ভালোবাসে।", hint: "💡 দেখো, সোনালি বাগানে এসে কত খুশি!" },
+            { step: 2, story: 1, text: "সোনালি একটি করে গাছের চারা তিন জায়গায় রোপণ করেছে", hint: "💡 দেখো, সোনালি একে একে ৩টি জায়গায় ১টি করে চারা লাগাচ্ছে (১, ১, ১)।" },
+            { step: 3, story: 1, text: "বলো তো , সে মোট কয়টি নতুন গাছের চারা রোপণ করলো", hint: "💡 শিক্ষার্থীদের জিজ্ঞেস করুন এবং প্রতিটি চারার ওপর ক্লিক করে একসাথে গুনুন!" },
+            { step: 4, story: 1, text: "১+১+১=৩", hint: "💡 ১টি চারা + ১টি চারা + ১টি চারা মিলে মোট ৩টি চারা হলো।" },
+            { step: 5, story: 1, text: "১ কে তিনবার যোগ করলে ৩ হবে।", hint: "💡 ১ সংখ্যাটি তিনবার যোগ করলে (১ + ১ + ১) যোগফল ৩ হয়।" },
+            { step: 6, story: 1, text: "তাই, সোনালি মোট ৩টি গাছের চারা রোপণ করেছে", hint: "🎉 সাবাশ! পরের ধাপে ক্লিক করে ডাক্তার কাকু ও কলার গল্পে যাও!" },
+
+            // STORY 2: DOCTOR KAKU & BANANAS (Steps 7 - 12)
+            { step: 7, story: 2, text: "ডাক্তার কাকু বলেছেন যে কলা খেলে শরীরে শক্তি পাওয়া যায়। তাই হরেন, ডেভিড ও নাজমা দুটি করে কলা রোজ খায়।", hint: "💡 দেখো, ডাক্তার কাকু বলছেন এবং হরেন, ডেভিড ও নাজমা ২টি করে কলা খাচ্ছে।" },
+            { step: 8, story: 2, text: "এসো , তিনজন মাইল রোজ কয়টি কলা খায় দেখি -", hint: "💡 শিক্ষার্থীদের কলাগুলোর ওপর ক্লিক করে একসাথে গুনতে বলুন!" },
+            { step: 9, story: 2, text: "দুটি করে কলা তিন জনে খায়,", hint: "💡 হরেন ২টি, ডেভিড ২টি এবং নাজমা ২টি করে কলা খায় (২, ২, ২)।" },
+            { step: 10, story: 2, text: "২+২+২=৬", hint: "💡 ২টি কলা + ২টি কলা + ২টি কলা মিলে মোট ৬টি কলা হলো।" },
+            { step: 11, story: 2, text: "২ তিনবার যোগে করলে ৬ হয়।", hint: "💡 ২ সংখ্যাটি তিনবার যোগ করলে (২ + ২ + ২) যোগফল ৬ হয়।" },
+            { step: 12, story: 2, text: "তিনজনে মিলে মোট ৬ টি কলা খায়", hint: "🎉 সাবাশ! পরের ধাপে ক্লিক করে রমলার বাজার থেকে ফল কেনার গল্পে যাও!" },
+
+            // STORY 3: RAMALA'S FRUITS (Steps 13 - 24)
+            { step: 13, story: 3, text: "রমলা বাজার থেকে চালতা ,কমলা ও আপেল কিনেছিল। এসো, সে প্রতি ধরণের ফল কয়টি করে কিনেছিল দেখে নেই -", hint: "💡 দেখো, রমলা বাজার থেকে তিন রকমের ফল (চালতা, কমলা ও আপেল) কিনে এনেছে।" },
+            { step: 14, story: 3, text: "৩+৩+৩+৩+৩ =১৫ টি চালতা", hint: "💡 প্রতিটি ঝুড়িতে ৩টি করে মোট ৫টি ঝুড়িতে চালতা আছে। ঝুড়ির চালতায় ক্লিক করে গুনতে পারো!" },
+            { step: 15, story: 3, text: "৩টি করে ৫ বার = ১৫টি", hint: "💡 ৩ সংখ্যাটি ৫ বার যোগ করলে (৩+৩+৩+৩+৩) মোট ১৫টি হয়।" },
+            { step: 16, story: 3, text: "রমলা মো ১৫টি চালতা কিনেছিল।", hint: "🎉 সাবাশ! রমলা মোট ১৫টি চালতা কিনেছিল (১ থেকে ১৫ পর্যন্ত দেখো)।" },
+            { step: 17, story: 3, text: "তারপর", hint: "💡 এবার চলো দেখি রমলা কয়টি কমলা কিনেছিল!" },
+            { step: 18, story: 3, text: "৪+৪+৪= ১২টি কমলা", hint: "💡 প্রতিটি ঝুড়িতে ৪টি করে ৩টি ঝুড়িতে কমলা আছে। কমলাগুলোর ওপর ক্লিক করে গুনতে পারো!" },
+            { step: 19, story: 3, text: "৪টি করে ৩ বার = ১২ টি", hint: "💡 ৪ সংখ্যাটি ৩ বার যোগ করলে (৪+৪+৪) মোট ১২টি কমলা হয়।" },
+            { step: 20, story: 3, text: "রমলা মোট ১২ টি কমলা কিনেছিল।", hint: "🎉 সাবাশ! রমলা মোট ১২টি কমলা কিনেছিল।" },
+            { step: 21, story: 3, text: "আবার ,", hint: "💡 এবার চলো দেখি রমলা কয়টি লাল আপেল কিনেছিল!" },
+            { step: 22, story: 3, text: "৫+৫+৫+৫ = ২0 টি", hint: "💡 প্রতিটি ঝুড়িতে ৫টি করে ৪টি ঝুড়িতে আপেল আছে। আপেলগুলোর ওপর ক্লিক করে গুনতে পারো!" },
+            { step: 23, story: 3, text: "৫ টি করে ৪ বার = ২0 টি", hint: "💡 ৫ সংখ্যাটি ৪ বার যোগ করলে (৫+৫+৫+৫) মোট ২০টি আপেল হয়।" },
+            { step: 24, story: 3, text: "রমলা মোট ২0 টি আপেল কিনেছিল।", hint: "🎉 দারুণ! তোমরা বার বার যোগের সবগুলো গল্প শিখে ফেলেছো!" },
+
+            // STORY 4: PRACTICE EXERCISE (Steps 25 to 33)
+            {
+                step: 25,
+                story: 4,
+                text: "অনুশীলন ১: সোনালি ১টি করে চারা ৩ জায়গায় লাগালে মোট কয়টি চারা হয়?",
+                hint: "✏️ সঠিক উত্তরটি বেছে নাও!",
+                exercise: {
+                    question: "১ + ১ + ১ = কত?",
+                    type: "saplings",
+                    count: 3,
+                    perGroup: 1,
+                    options: ["২টি", "৩টি", "৪টি", "৫টি"],
+                    correctIndex: 1
+                }
+            },
+            {
+                step: 26,
+                story: 4,
+                text: "অনুশীলন ২: হরেন, ডেভিড ও নাজমা ২টি করে কলা খেলে মোট কয়টি কলা হয়?",
+                hint: "✏️ সঠিক উত্তরটি বেছে নাও!",
+                exercise: {
+                    question: "২ + ২ + ২ = কত?",
+                    type: "banana",
+                    count: 3,
+                    perGroup: 2,
+                    options: ["৪টি", "৫টি", "৬টি", "৮টি"],
+                    correctIndex: 2
+                }
+            },
+            {
+                step: 27,
+                story: 4,
+                text: "অনুশীলন ৩: ৩টি করে ৫ বার চালতা কিনলে মোট কয়টি চালতা হয়?",
+                hint: "✏️ সঠিক উত্তরটি বেছে নাও!",
+                exercise: {
+                    question: "৩টি করে ৫ বার = কত?",
+                    type: "chalta",
+                    count: 5,
+                    perGroup: 3,
+                    options: ["১০টি", "১২টি", "১৫টি", "২০টি"],
+                    correctIndex: 2
+                }
+            },
+            {
+                step: 28,
+                story: 4,
+                text: "অনুশীলন ৪: ৪টি করে ৩ বার কমলা কিনলে মোট কয়টি কমলা হয়?",
+                hint: "✏️ সঠিক উত্তরটি বেছে নাও!",
+                exercise: {
+                    question: "৪টি করে ৩ বার = কত?",
+                    type: "orange",
+                    count: 3,
+                    perGroup: 4,
+                    options: ["১০টি", "১২টি", "১৫টি", "১৬টি"],
+                    correctIndex: 1
+                }
+            },
+            {
+                step: 29,
+                story: 4,
+                text: "অনুশীলন ৫: ৫টি করে ৪ বার আপেল কিনলে মোট কয়টি আপেল হয়?",
+                hint: "✏️ সঠিক উত্তরটি বেছে নাও!",
+                exercise: {
+                    question: "৫টি করে ৪ বার = কত?",
+                    type: "apple",
+                    count: 4,
+                    perGroup: 5,
+                    options: ["১৫টি", "১৮টি", "২০টি", "২৫টি"],
+                    correctIndex: 2
+                }
+            },
+            {
+                step: 30,
+                story: 4,
+                text: "অনুশীলন ৬: ৪টি করে কলা ৪ বার থাকলে মোট কয়টি কলা হয়?",
+                hint: "✏️ সঠিক উত্তরটি বেছে নাও!",
+                exercise: {
+                    question: "৪টি করে কলা ৪ বার = কত?",
+                    type: "banana",
+                    count: 4,
+                    perGroup: 4,
+                    options: ["১২টি", "১৪টি", "১৬টি", "২০টি"],
+                    correctIndex: 2
+                }
+            },
+            {
+                step: 31,
+                story: 4,
+                text: "অনুশীলন ৭: ৩টি করে আম ৬ বার থাকলে মোট কয়টি আম হয়?",
+                hint: "✏️ সঠিক উত্তরটি বেছে নাও!",
+                exercise: {
+                    question: "৩টি করে আম ৬ বার = কত?",
+                    type: "mango",
+                    count: 6,
+                    perGroup: 3,
+                    options: ["১৫টি", "১৮টি", "২১টি", "২৪টি"],
+                    correctIndex: 1
+                }
+            },
+            {
+                step: 32,
+                story: 4,
+                text: "অনুশীলন ৮: ৪টি করে কলম ৫ বার থাকলে মোট কয়টি কলম হয়?",
+                hint: "✏️ সঠিক উত্তরটি বেছে নাও!",
+                exercise: {
+                    question: "৪টি করে কলম ৫ বার = কত?",
+                    type: "pen",
+                    count: 5,
+                    perGroup: 4,
+                    options: ["১৬টি", "১৮টি", "২০টি", "২৪টি"],
+                    correctIndex: 2
+                }
+            },
+            {
+                step: 33,
+                story: 4,
+                text: "অভিনন্দন! তুমি সফলভাবে সকল অনুশীলন সম্পন্ন করেছো!",
+                hint: "🎉 দারুণ কাজ করেছো! তুমি গণিতের চ্যাম্পিয়ন!"
+            }
+        ];
+
+        const bengaliDigits = [
+            '০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯', '১০',
+            '১১', '১২', '১৩', '১৪', '১৫', '১৬', '১৭', '১৮', '১৯', '২০',
+            '২১', '২২', '২৩', '২৪', '২৫', '২৬', '২৭', '২৮', '২৯', '৩০',
+            '৩১', '৩২', '৩৩'
+        ];
+
+        let currentStepIndex = 0;
+        let isMuted = false;
+        let isAutoPlaying = false;
+        let autoPlayTimer = null;
+        let stepTimers = [];
+        let audioCtx = null;
+
+        function clearStepTimers() {
+            stepTimers.forEach(timer => clearTimeout(timer));
+            stepTimers = [];
+        }
+
+        function scheduleStepAction(callback, delay) {
+            const timer = setTimeout(callback, delay);
+            stepTimers.push(timer);
+        }
+
+        function getAudioContext() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContext();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        function playTone(freq, type = 'sine', duration = 0.25, delay = 0) {
+            if (isMuted) return;
+            try {
+                const ctx = getAudioContext();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, ctx.currentTime + delay);
+                gain.gain.setValueAtTime(0.18, ctx.currentTime + delay);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + duration);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(ctx.currentTime + delay);
+                osc.stop(ctx.currentTime + delay + duration);
+            } catch (e) {}
+        }
+
+        function playPlantSound() {
+            playTone(380, 'triangle', 0.15, 0);
+            playTone(540, 'sine', 0.25, 0.1);
+        }
+
+        function playPopSound(pitchMultiplier = 1) {
+            playTone(440 * pitchMultiplier, 'sine', 0.22, 0);
+        }
+
+        function playCelebrationFanfare() {
+            const notes = [523.25, 659.25, 783.99, 1046.50];
+            notes.forEach((n, idx) => {
+                playTone(n, 'triangle', 0.35, idx * 0.14);
+            });
+        }
+
+        function speakText(text) {
+            if (isMuted || !('speechSynthesis' in window)) return;
+            try {
+                window.speechSynthesis.cancel();
+                let spokenString = text
+                    .replace("১+১+১=৩", "এক যোগ এক যোগ এক সমান তিন")
+                    .replace("২+২+২=৬", "দুই যোগ দুই যোগ দুই সমান ছয়")
+                    .replace("৩+৩+৩+৩+৩ =১৫", "তিন যোগ তিন যোগ তিন যোগ তিন যোগ তিন সমান পনেরো")
+                    .replace("৪+৪+৪= ১২", "চার যোগ চার যোগ চার সমান বারো")
+                    .replace("৫+৫+৫+৫ = ২0", "পাঁচ যোগ পাঁচ যোগ পাঁচ যোগ পাঁচ সমান বিশ")
+                    .replace(/২0/g, "২০")
+                    .replace("রমলা মো ১৫টি", "রমলা মোট ১৫টি")
+                    .replace("কোলা", "কলা")
+                    .replace("মাইল", "মিলে");
+                const utterance = new SpeechSynthesisUtterance(spokenString);
+                utterance.lang = 'bn-BD';
+                utterance.rate = 0.88;
+                utterance.pitch = 1.1;
+                const voices = window.speechSynthesis.getVoices();
+                const bnVoice = voices.find(v => v.lang.includes('bn') || v.lang.includes('BN'));
+                if (bnVoice) utterance.voice = bnVoice;
+                window.speechSynthesis.speak(utterance);
+            } catch (e) {}
+        }
+
+        function speakCurrentLine() {
+            speakText(storySteps[currentStepIndex].text);
+        }
+
+        function renderStepDots() {
+            const container = document.getElementById('step-dots');
+            container.innerHTML = '';
+            storySteps.forEach((s, idx) => {
+                if (idx === 6 || idx === 12 || idx === 24) {
+                    const divider = document.createElement('span');
+                    divider.className = 'mx-0.5 text-slate-400 font-bold text-xs';
+                    divider.textContent = '|';
+                    container.appendChild(divider);
+                }
+
+                const btn = document.createElement('button');
+                const isActive = idx === currentStepIndex;
+                const isDone = idx < currentStepIndex;
+                const storyNum = s.story;
+
+                let activeStyle = 'bg-emerald-600 text-white border-emerald-800 scale-110 shadow-md';
+                let doneStyle = 'bg-emerald-200 text-emerald-900 border-emerald-400';
+
+                if (storyNum === 2) {
+                    activeStyle = 'bg-amber-500 text-amber-950 border-amber-800 scale-110 shadow-md';
+                    doneStyle = 'bg-amber-200 text-amber-900 border-amber-400';
+                } else if (storyNum === 3) {
+                    activeStyle = 'bg-rose-600 text-white border-rose-900 scale-110 shadow-md';
+                    doneStyle = 'bg-rose-200 text-rose-900 border-rose-400';
+                } else if (storyNum === 4) {
+                    activeStyle = 'bg-purple-600 text-white border-purple-900 scale-110 shadow-md';
+                    doneStyle = 'bg-purple-200 text-purple-900 border-purple-400';
+                }
+
+                btn.className = `w-6 h-6 sm:w-7 sm:h-7 rounded-full font-extrabold text-[11px] sm:text-xs transition-all border-2 flex items-center justify-center shrink-0 ${
+                    isActive ? activeStyle : isDone ? doneStyle : 'bg-slate-100 text-slate-500 border-slate-300'
+                }`;
+                btn.textContent = bengaliDigits[idx + 1];
+                btn.title = `ধাপ ${bengaliDigits[idx + 1]}`;
+                btn.onclick = () => goToStep(idx);
+                container.appendChild(btn);
+            });
+
+            const tab1 = document.getElementById('tab-story-1');
+            const tab2 = document.getElementById('tab-story-2');
+            const tab3 = document.getElementById('tab-story-3');
+            const tab4 = document.getElementById('tab-story-4');
+
+            tab1.className = 'px-2.5 sm:px-3 py-1 rounded-xl font-extrabold text-xs sm:text-sm transition-all text-slate-700 hover:bg-emerald-100';
+            tab2.className = 'px-2.5 sm:px-3 py-1 rounded-xl font-extrabold text-xs sm:text-sm transition-all text-slate-700 hover:bg-amber-100';
+            tab3.className = 'px-2.5 sm:px-3 py-1 rounded-xl font-extrabold text-xs sm:text-sm transition-all text-slate-700 hover:bg-rose-100';
+            tab4.className = 'px-2.5 sm:px-3 py-1 rounded-xl font-extrabold text-xs sm:text-sm transition-all text-slate-700 hover:bg-purple-100';
+
+            if (currentStepIndex < 6) {
+                tab1.className = 'px-2.5 sm:px-3 py-1 rounded-xl font-extrabold text-xs sm:text-sm transition-all bg-emerald-500 text-white shadow';
+            } else if (currentStepIndex < 12) {
+                tab2.className = 'px-2.5 sm:px-3 py-1 rounded-xl font-extrabold text-xs sm:text-sm transition-all bg-amber-500 text-amber-950 shadow';
+            } else if (currentStepIndex < 24) {
+                tab3.className = 'px-2.5 sm:px-3 py-1 rounded-xl font-extrabold text-xs sm:text-sm transition-all bg-rose-500 text-white shadow';
+            } else {
+                tab4.className = 'px-2.5 sm:px-3 py-1 rounded-xl font-extrabold text-xs sm:text-sm transition-all bg-purple-500 text-white shadow';
+            }
+        }
+
+        function setSaplingVisible(spotNum, visible, animate = false) {
+            const sapling = document.getElementById(`sapling-${spotNum}`);
+            const label = document.getElementById(`label-${spotNum}`);
+            if (visible) {
+                sapling.classList.remove('hidden');
+                if (animate) {
+                    sapling.classList.remove('animate-grow');
+                    void sapling.offsetWidth;
+                    sapling.classList.add('animate-grow');
+                }
+                label.classList.remove('opacity-0');
+                label.classList.add('opacity-100');
+            } else {
+                sapling.classList.add('hidden');
+                sapling.classList.remove('animate-grow');
+                label.classList.remove('opacity-100', 'animate-pulse-glow');
+                label.classList.add('opacity-0');
+            }
+        }
+
+        function resetOverlays() {
+            document.getElementById('question-bubble').classList.add('hidden');
+            document.getElementById('equation-board').classList.add('hidden');
+            document.getElementById('step5-explainer').classList.add('hidden');
+            document.getElementById('s3-equation-board').classList.add('hidden');
+            document.getElementById('s3-explainer').classList.add('hidden');
+            document.getElementById('final-banner').classList.add('hidden');
+            document.getElementById('water-drops').classList.add('hidden');
+            document.getElementById('plus-1-2').classList.add('hidden');
+            document.getElementById('plus-2-3').classList.add('hidden');
+            document.getElementById('b-plus-1-2').classList.add('hidden');
+            document.getElementById('b-plus-2-3').classList.add('hidden');
+            document.getElementById('confetti-layer').innerHTML = '';
+
+            for (let i = 1; i <= 3; i++) {
+                document.getElementById(`label-${i}`).classList.remove('animate-pulse-glow', 'bg-emerald-400');
+                document.getElementById(`label-${i}`).classList.add('bg-yellow-300');
+                document.getElementById(`top-count-${i}`).classList.add('hidden');
+                document.getElementById(`flower-${i}`).classList.add('hidden');
+                document.getElementById(`eq-num-${i}`).classList.remove('animate-pulse-glow', 'bg-yellow-300');
+
+                document.getElementById(`b-label-${i}`).classList.remove('animate-pulse-glow', 'opacity-0');
+                document.getElementById(`energy-${i}`).classList.add('hidden');
+                document.getElementById(`kid-svg-${i}`).classList.remove('animate-bounce');
+            }
+
+            for (let b = 1; b <= 6; b++) {
+                document.getElementById(`b-count-${b}`).classList.add('hidden');
+            }
+        }
+
+        function getFruitSvg(type) {
+            if (type === 'chalta') {
+                return `<svg viewBox="0 0 44 44" class="w-7 h-7 sm:w-9 sm:h-9 drop-shadow">
+                    <circle cx="22" cy="24" r="15" fill="#65a30d" stroke="#365314" stroke-width="2.5"/>
+                    <path d="M 12 18 Q 22 28 32 18" fill="none" stroke="#365314" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M 15 30 Q 22 20 29 30" fill="none" stroke="#84cc16" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M 22 9 L 25 3" stroke="#3f6212" stroke-width="3" stroke-linecap="round"/>
+                </svg>`;
+            } else if (type === 'orange') {
+                return `<svg viewBox="0 0 44 44" class="w-7 h-7 sm:w-9 sm:h-9 drop-shadow">
+                    <circle cx="22" cy="24" r="15" fill="#f97316" stroke="#c2410c" stroke-width="2.5"/>
+                    <circle cx="17" cy="19" r="2" fill="#ffedd5" opacity="0.7"/>
+                    <path d="M 22 9 Q 29 3 32 9 Q 26 12 22 9 Z" fill="#22c55e" stroke="#15803d" stroke-width="1.5"/>
+                </svg>`;
+            } else if (type === 'mango') {
+                return `<svg viewBox="0 0 44 44" class="w-7 h-7 sm:w-9 sm:h-9 drop-shadow">
+                    <path d="M 22 10 C 34 10, 38 24, 28 36 C 24 40, 16 38, 12 32 C 8 24, 10 10, 22 10 Z" fill="#fbbf24" stroke="#d97706" stroke-width="2.5"/>
+                    <path d="M 22 10 L 26 4" stroke="#451a03" stroke-width="3" stroke-linecap="round"/>
+                </svg>`;
+            } else if (type === 'pen') {
+                return `<svg viewBox="0 0 44 44" class="w-7 h-7 sm:w-9 sm:h-9 drop-shadow">
+                    <rect x="18" y="6" width="8" height="28" rx="2" fill="#0284c7" stroke="#0369a1" stroke-width="2"/>
+                    <polygon points="18,34 26,34 22,41" fill="#facc15" stroke="#ca8a04" stroke-width="1.5"/>
+                    <rect x="19" y="8" width="6" height="4" fill="#ffffff" opacity="0.7"/>
+                </svg>`;
+            } else {
+                return `<svg viewBox="0 0 44 44" class="w-6 h-6 sm:w-8 sm:h-8 drop-shadow">
+                    <path d="M 22 12 C 13 7, 5 17, 9 29 C 12 37, 19 39, 22 35 C 25 39, 32 37, 35 29 C 39 17, 31 7, 22 12 Z" fill="#ef4444" stroke="#991b1b" stroke-width="2.5"/>
+                    <path d="M 22 12 L 22 5" stroke="#78350f" stroke-width="2.5" stroke-linecap="round"/>
+                    <path d="M 22 8 Q 30 3 32 8 Q 26 12 22 8 Z" fill="#22c55e" stroke="#15803d" stroke-width="1.5"/>
+                </svg>`;
+            }
+        }
+
+        function renderExerciseSlide(exData) {
+            document.getElementById('ex-problem-text').textContent = exData.question;
+            const visualBox = document.getElementById('ex-visual-icons');
+            visualBox.innerHTML = '';
+            visualBox.className = 'flex flex-wrap items-center justify-center gap-2 sm:gap-3 py-1';
+
+            // Generate structured baskets/groups for exercise visuals
+            for (let g = 0; g < exData.count; g++) {
+                const basketGroup = document.createElement('div');
+                basketGroup.className = 'bg-white/90 border-2 border-purple-300 rounded-xl p-1.5 shadow-sm flex flex-wrap items-center justify-center gap-1 max-w-[95px]';
+
+                for (let p = 0; p < exData.perGroup; p++) {
+                    const itemEl = document.createElement('div');
+                    itemEl.className = 'flex items-center justify-center';
+                    if (exData.type === 'saplings') {
+                        itemEl.innerHTML = `<span class="text-2xl sm:text-3xl">🌱</span>`;
+                    } else if (exData.type === 'banana') {
+                        itemEl.innerHTML = `<svg viewBox="0 0 60 60" class="w-7 h-7 sm:w-9 sm:h-9 drop-shadow"><path d="M 14 46 Q 8 20 38 10 Q 44 8 46 13 Q 26 26 26 48 Q 20 52 14 46 Z" fill="#facc15" stroke="#ca8a04" stroke-width="2.5"/><path d="M 38 10 L 43 6" stroke="#65a30d" stroke-width="4" stroke-linecap="round"/></svg>`;
+                    } else if (exData.type === 'chalta') {
+                        itemEl.innerHTML = getFruitSvg('chalta');
+                    } else if (exData.type === 'orange') {
+                        itemEl.innerHTML = getFruitSvg('orange');
+                    } else if (exData.type === 'apple') {
+                        itemEl.innerHTML = getFruitSvg('apple');
+                    } else if (exData.type === 'mango') {
+                        itemEl.innerHTML = getFruitSvg('mango');
+                    } else if (exData.type === 'pen') {
+                        itemEl.innerHTML = getFruitSvg('pen');
+                    }
+                    basketGroup.appendChild(itemEl);
+                }
+                visualBox.appendChild(basketGroup);
+            }
+
+            const feedbackEl = document.getElementById('ex-feedback');
+            feedbackEl.classList.add('hidden');
+
+            const grid = document.getElementById('ex-options-grid');
+            grid.innerHTML = '';
+
+            exData.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-kid bg-purple-100 hover:bg-purple-200 text-purple-950 border-3 border-purple-400 font-black text-lg sm:text-xl py-3 rounded-2xl shadow';
+                btn.textContent = opt;
+                btn.onclick = () => {
+                    if (idx === exData.correctIndex) {
+                        btn.className = 'btn-kid bg-emerald-500 text-white border-3 border-emerald-700 font-black text-lg sm:text-xl py-3 rounded-2xl shadow animate-bounce';
+                        feedbackEl.textContent = '🎉 অসাধারণ! সঠিক উত্তর!';
+                        feedbackEl.className = 'bg-emerald-100 text-emerald-800 border-2 border-emerald-400 font-extrabold text-base px-3 py-1.5 rounded-xl block';
+                        playCelebrationFanfare();
+                        launchConfetti();
+                        speakText('সঠিক উত্তর!');
+                    } else {
+                        btn.className = 'btn-kid bg-rose-200 text-rose-900 border-3 border-rose-400 font-black text-lg sm:text-xl py-3 rounded-2xl shadow';
+                        feedbackEl.textContent = '❌ আবার চেষ্টা করো!';
+                        feedbackEl.className = 'bg-rose-100 text-rose-800 border-2 border-rose-400 font-extrabold text-base px-3 py-1.5 rounded-xl block';
+                        playTone(200, 'sawtooth', 0.2);
+                        speakText('আবার চেষ্টা করো');
+                    }
+                };
+                grid.appendChild(btn);
+            });
+        }
+
+        function interactWithStory3Fruit(num, fruitNameBn) {
+            const badge = document.getElementById(`s3-count-${num}`);
+            const fruitEl = document.getElementById(`s3-fruit-${num}`);
+            if (!badge || !fruitEl) return;
+            badge.classList.remove('hidden');
+            fruitEl.classList.remove('animate-pop');
+            void fruitEl.offsetWidth;
+            fruitEl.classList.add('animate-pop');
+            playPopSound(0.85 + (num % 8) * 0.08);
+            speakText(`${bengaliDigits[num]}টি ${fruitNameBn}`);
+        }
+
+        function interactWithSapling(spotNum) {
+            const topBadge = document.getElementById(`top-count-${spotNum}`);
+            const sapling = document.getElementById(`sapling-${spotNum}`);
+            if (!topBadge || !sapling) return;
+            topBadge.textContent = bengaliDigits[spotNum];
+            topBadge.classList.remove('hidden');
+            sapling.classList.remove('animate-grow');
+            void sapling.offsetWidth;
+            sapling.classList.add('animate-grow');
+            playPopSound(1.1 + spotNum * 0.1);
+            speakText(`${bengaliDigits[spotNum]} নম্বর চারা`);
+        }
+
+        function interactWithBanana(bananaNum) {
+            const bBadge = document.getElementById(`b-count-${bananaNum}`);
+            if (!bBadge) return;
+            bBadge.classList.remove('hidden');
+            playPopSound(1.05 + bananaNum * 0.08);
+            speakText(`${bengaliDigits[bananaNum]} নম্বর কলা`);
+        }
+
+        function renderStory3IntroBaskets() {
+            const container = document.getElementById('ramala-baskets-area');
+            container.innerHTML = `
+                <div class="flex flex-col items-center bg-white/90 border-3 border-rose-400 rounded-2xl p-2 shadow-md">
+                    <span class="text-xs font-black text-rose-800 mb-1">চালতা (১৫টি)</span>
+                    <div class="flex gap-1">
+                        <div class="w-8 h-8 rounded-xl bg-lime-200 border-2 border-lime-600 flex items-center justify-center font-black text-xs text-lime-900">৩×৫</div>
+                    </div>
+                </div>
+                <div class="flex flex-col items-center bg-white/90 border-3 border-rose-400 rounded-2xl p-2 shadow-md">
+                    <span class="text-xs font-black text-rose-800 mb-1">কমলা (১২টি)</span>
+                    <div class="flex gap-1">
+                        <div class="w-8 h-8 rounded-xl bg-orange-200 border-2 border-orange-600 flex items-center justify-center font-black text-xs text-orange-900">৪×৩</div>
+                    </div>
+                </div>
+                <div class="flex flex-col items-center bg-white/90 border-3 border-rose-400 rounded-2xl p-2 shadow-md">
+                    <span class="text-xs font-black text-rose-800 mb-1">আপেল (২০টি)</span>
+                    <div class="flex gap-1">
+                        <div class="w-8 h-8 rounded-xl bg-rose-200 border-2 border-rose-600 flex items-center justify-center font-black text-xs text-rose-900">৫×৪</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderStory3FruitGroups(fruitType, numGroups, perGroup, groupLabelBn, showBadges) {
+            const container = document.getElementById('ramala-baskets-area');
+            container.innerHTML = '';
+            let fruitCounter = 1;
+
+            for (let g = 1; g <= numGroups; g++) {
+                const groupCard = document.createElement('div');
+                groupCard.className = 'flex flex-col items-center bg-white/95 border-3 border-rose-400 rounded-2xl p-2 shadow-lg relative';
+                
+                const badge = document.createElement('div');
+                badge.id = `s3-label-${g}`;
+                badge.className = 'absolute -top-3.5 bg-yellow-300 border-2 border-amber-600 text-amber-950 font-black text-xs sm:text-sm px-2.5 py-0.5 rounded-full shadow';
+                badge.textContent = groupLabelBn;
+                groupCard.appendChild(badge);
+
+                const fruitsGrid = document.createElement('div');
+                fruitsGrid.className = 'flex flex-wrap items-center justify-center gap-1 mt-2 max-w-[120px]';
+
+                for (let p = 0; p < perGroup; p++) {
+                    const currentFruitId = fruitCounter++;
+                    const fruitWrapper = document.createElement('div');
+                    fruitWrapper.className = 'sapling-spot relative flex items-center justify-center';
+                    fruitWrapper.onclick = () => interactWithStory3Fruit(currentFruitId, fruitType);
+
+                    const countBadge = document.createElement('span');
+                    countBadge.id = `s3-count-${currentFruitId}`;
+                    countBadge.className = `${showBadges ? '' : 'hidden'} absolute -top-4 bg-pink-600 text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center border border-white shadow z-30 animate-pop`;
+                    countBadge.textContent = bengaliDigits[currentFruitId];
+                    fruitWrapper.appendChild(countBadge);
+
+                    const svgContainer = document.createElement('div');
+                    svgContainer.id = `s3-fruit-${currentFruitId}`;
+                    svgContainer.innerHTML = getFruitSvg(fruitType);
+                    fruitWrapper.appendChild(svgContainer);
+
+                    fruitsGrid.appendChild(fruitWrapper);
+                }
+                groupCard.appendChild(fruitsGrid);
+                container.appendChild(groupCard);
+            }
+        }
+
+        function configureStory3Equation(numGroups, perGroupVal, totalStr, explainerText, showExplainer) {
+            const board = document.getElementById('s3-equation-board');
+            const row = document.getElementById('s3-eq-row');
+            const explainer = document.getElementById('s3-explainer');
+            const explainerSpan = document.getElementById('s3-explainer-text');
+            row.innerHTML = '';
+
+            for (let i = 0; i < numGroups; i++) {
+                const numSpan = document.createElement('span');
+                numSpan.id = `s3-eq-num-${i + 1}`;
+                numSpan.className = 'w-9 h-9 sm:w-12 sm:h-12 rounded-xl bg-rose-100 border-2 border-rose-500 text-rose-900 flex items-center justify-center shadow font-black';
+                numSpan.textContent = perGroupVal;
+                row.appendChild(numSpan);
+
+                if (i < numGroups - 1) {
+                    const plusSpan = document.createElement('span');
+                    plusSpan.className = 'text-amber-600 font-bold';
+                    plusSpan.textContent = '+';
+                    row.appendChild(plusSpan);
+                }
+            }
+
+            const eqSpan = document.createElement('span');
+            eqSpan.className = 'text-amber-600 font-bold';
+            eqSpan.textContent = '=';
+            row.appendChild(eqSpan);
+
+            const totalSpan = document.createElement('span');
+            totalSpan.className = 'px-3 py-1 rounded-xl bg-amber-400 border-2 border-amber-600 text-amber-950 font-black shadow';
+            totalSpan.textContent = totalStr;
+            row.appendChild(totalSpan);
+
+            board.classList.remove('hidden');
+
+            if (showExplainer) {
+                explainerSpan.textContent = explainerText;
+                explainer.classList.remove('hidden');
+            } else {
+                explainer.classList.add('hidden');
+            }
+        }
+
+        function configureEquationBoard(numStr, totalStr, explainerStr) {
+            for (let i = 1; i <= 3; i++) {
+                document.getElementById(`eq-num-${i}`).textContent = numStr;
+            }
+            document.getElementById('eq-total').textContent = totalStr;
+            document.getElementById('step5-explainer-text').textContent = explainerStr;
+        }
+
+        function renderStepScene(stepIdx) {
+            clearStepTimers();
+            resetOverlays();
+            renderStepDots();
+
+            const stepData = storySteps[stepIdx];
+            const storyTextEl = document.getElementById('story-text');
+            const badgeEl = document.getElementById('step-badge');
+            const hintEl = document.getElementById('teacher-hint');
+            const headerTitle = document.getElementById('header-title');
+            const storyIcon = document.getElementById('story-icon');
+
+            const scene1 = document.getElementById('scene-story-1');
+            const scene2 = document.getElementById('scene-story-2');
+            const scene3 = document.getElementById('scene-story-3');
+            const sceneEx = document.getElementById('scene-exercise');
+
+            badgeEl.textContent = `ধাপ ${bengaliDigits[stepIdx + 1]} / ৩৩`;
+            storyTextEl.classList.remove('animate-pop');
+            void storyTextEl.offsetWidth;
+            storyTextEl.textContent = stepData.text;
+            storyTextEl.classList.add('animate-pop');
+            hintEl.textContent = stepData.hint;
+
+            document.getElementById('btn-prev').disabled = (stepIdx === 0);
+            document.getElementById('btn-next').disabled = (stepIdx === storySteps.length - 1);
+
+            if (stepIdx < 6) {
+                scene1.classList.remove('hidden');
+                scene2.classList.add('hidden');
+                scene3.classList.add('hidden');
+                sceneEx.classList.add('hidden');
+                headerTitle.textContent = "সোনালির গাছ লাগানোর গল্প";
+                storyIcon.textContent = "🌱";
+                storyIcon.className = "w-11 h-11 rounded-2xl bg-emerald-500 flex items-center justify-center text-white text-2xl shadow-inner";
+            } else if (stepIdx < 12) {
+                scene1.classList.add('hidden');
+                scene2.classList.remove('hidden');
+                scene3.classList.add('hidden');
+                sceneEx.classList.add('hidden');
+                headerTitle.textContent = "ডাক্তার কাকু ও কলার গল্প";
+                storyIcon.textContent = "🍌";
+                storyIcon.className = "w-11 h-11 rounded-2xl bg-amber-400 flex items-center justify-center text-white text-2xl shadow-inner";
+            } else if (stepIdx < 24) {
+                scene1.classList.add('hidden');
+                scene2.classList.add('hidden');
+                scene3.classList.remove('hidden');
+                sceneEx.classList.add('hidden');
+                headerTitle.textContent = "রমলার বাজার থেকে ফল কেনার গল্প";
+                storyIcon.textContent = "🍎";
+                storyIcon.className = "w-11 h-11 rounded-2xl bg-rose-500 flex items-center justify-center text-white text-2xl shadow-inner";
+            } else {
+                scene1.classList.add('hidden');
+                scene2.classList.add('hidden');
+                scene3.classList.add('hidden');
+                sceneEx.classList.remove('hidden');
+                headerTitle.textContent = "বার বার যোগের অনুশীলন";
+                storyIcon.textContent = "✏️";
+                storyIcon.className = "w-11 h-11 rounded-2xl bg-purple-600 flex items-center justify-center text-white text-2xl shadow-inner";
+                if (stepData.exercise) {
+                    renderExerciseSlide(stepData.exercise);
+                } else if (stepIdx === 32) {
+                    document.getElementById('ex-problem-text').textContent = "অভিনন্দন! তুমি সকল অনুশীলন সফলভাবে সম্পন্ন করেছো!";
+                    document.getElementById('ex-visual-icons').textContent = "🌟 🏆 🌟";
+                    document.getElementById('ex-options-grid').innerHTML = '<div class="col-span-2 sm:col-span-4 bg-amber-100 border-3 border-amber-500 text-amber-950 font-black text-xl py-3 rounded-2xl">🎉 দারুণ চ্যাম্পিয়ন! 🎉</div>';
+                    playCelebrationFanfare();
+                    launchConfetti();
+                }
+            }
+
+            speakCurrentLine();
+
+            const sonali = document.getElementById('sonali-container');
+            const sonaliBubble = document.getElementById('sonali-bubble');
+            const waterDrops = document.getElementById('water-drops');
+            const doctor = document.getElementById('doctor-container');
+            const doctorBubble = document.getElementById('doctor-bubble');
+            const kidsRow = document.getElementById('kids-row');
+            const ramalaBubble = document.getElementById('ramala-bubble');
+
+            if (stepIdx === 0) {
+                sonali.style.left = '10%';
+                sonaliBubble.innerHTML = '<span>গাছ লাগাতে খুব ভালো লাগে!</span> <span>🌱💚</span>';
+                setSaplingVisible(1, false); setSaplingVisible(2, false); setSaplingVisible(3, false);
+                playPopSound(1);
+            }
+            else if (stepIdx === 1) {
+                setSaplingVisible(1, false); setSaplingVisible(2, false); setSaplingVisible(3, false);
+                sonali.style.left = '18%';
+                sonaliBubble.innerHTML = '<span>১ম জায়গায় ১টি চারা</span> <span>🌱</span>';
+                waterDrops.classList.remove('hidden');
+
+                scheduleStepAction(() => { setSaplingVisible(1, true, true); playPlantSound(); }, 500);
+                scheduleStepAction(() => { sonali.style.left = '44%'; sonaliBubble.innerHTML = '<span>২য় জায়গায় ১টি চারা</span> <span>🌱</span>'; }, 1350);
+                scheduleStepAction(() => { setSaplingVisible(2, true, true); playPlantSound(); }, 1850);
+                scheduleStepAction(() => { sonali.style.left = '70%'; sonaliBubble.innerHTML = '<span>৩য় জায়গায় ১টি চারা</span> <span>🌱</span>'; }, 2700);
+                scheduleStepAction(() => { setSaplingVisible(3, true, true); playPlantSound(); }, 3200);
+                scheduleStepAction(() => { waterDrops.classList.add('hidden'); sonali.style.left = '6%'; sonaliBubble.innerHTML = '<span>৩ জায়গায় লাগানো শেষ!</span> <span>✨</span>'; }, 4000);
+            }
+            else if (stepIdx === 2) {
+                sonali.style.left = '6%';
+                sonaliBubble.innerHTML = '<span>মোট কয়টি হলো বলো তো?</span> <span>🤔❓</span>';
+                setSaplingVisible(1, true, false); setSaplingVisible(2, true, false); setSaplingVisible(3, true, false);
+                document.getElementById('question-title').textContent = 'চলো তো একসাথে গুনে দেখি!';
+                document.getElementById('question-sub').textContent = 'গাছের চারাগুলোর ওপর ক্লিক করে গুনতে পারো!';
+                document.getElementById('question-bubble').classList.remove('hidden');
+                playPopSound(1.15);
+            }
+            else if (stepIdx === 3) {
+                sonali.style.left = '5%';
+                sonaliBubble.innerHTML = '<span>১ + ১ + ১ = ৩</span> <span>🌟</span>';
+                setSaplingVisible(1, true, false); setSaplingVisible(2, true, false); setSaplingVisible(3, true, false);
+                configureEquationBoard('১', '৩', '🌱 (১ম বার ১) + 🌱 (২য় বার ১) + 🌱 (৩য় বার ১) = মোট ৩টি চারা!');
+                document.getElementById('plus-1-2').classList.remove('hidden');
+                document.getElementById('plus-2-3').classList.remove('hidden');
+                document.getElementById('equation-board').classList.remove('hidden');
+                [1, 2, 3].forEach((n, idx) => {
+                    scheduleStepAction(() => {
+                        document.getElementById(`label-${n}`).classList.add('animate-pulse-glow');
+                        document.getElementById(`eq-num-${n}`).classList.add('animate-pulse-glow', 'bg-yellow-300');
+                        playPopSound(1 + idx * 0.15);
+                    }, idx * 450);
+                });
+            }
+            else if (stepIdx === 4) {
+                sonali.style.left = '5%';
+                sonaliBubble.innerHTML = '<span>তিনবার ১ যোগ করলে ৩ হয়!</span> <span>👏</span>';
+                setSaplingVisible(1, true, false); setSaplingVisible(2, true, false); setSaplingVisible(3, true, false);
+                configureEquationBoard('১', '৩', '🌱 (১ম বার ১) + 🌱 (২য় বার ১) + 🌱 (৩য় বার ১) = মোট ৩টি চারা!');
+                document.getElementById('plus-1-2').classList.remove('hidden');
+                document.getElementById('plus-2-3').classList.remove('hidden');
+                document.getElementById('equation-board').classList.remove('hidden');
+                document.getElementById('step5-explainer').classList.remove('hidden');
+                for (let i = 1; i <= 3; i++) {
+                    document.getElementById(`label-${i}`).classList.add('animate-pulse-glow');
+                    document.getElementById(`eq-num-${i}`).classList.add('animate-pulse-glow', 'bg-yellow-300');
+                }
+                playPopSound(1.25);
+            }
+            else if (stepIdx === 5) {
+                sonali.style.left = '6%';
+                sonaliBubble.innerHTML = '<span>মোট ৩টি গাছের চারা! কি মজা!</span> <span>🎉🌸</span>';
+                setSaplingVisible(1, true, false); setSaplingVisible(2, true, false); setSaplingVisible(3, true, false);
+                document.getElementById('final-banner-text').textContent = 'মোট ৩টি নতুন গাছের চারা! (১, ২, ৩)';
+                document.getElementById('final-banner-icon').textContent = '🌸';
+                document.getElementById('final-banner').classList.remove('hidden');
+                launchConfetti();
+                playCelebrationFanfare();
+                [1, 2, 3].forEach((n, idx) => {
+                    scheduleStepAction(() => {
+                        const topBadge = document.getElementById(`top-count-${n}`);
+                        const flower = document.getElementById(`flower-${n}`);
+                        topBadge.textContent = bengaliDigits[n];
+                        topBadge.classList.remove('hidden');
+                        flower.classList.remove('hidden');
+                        playPopSound(1 + idx * 0.2);
+                    }, idx * 550);
+                });
+            }
+            else if (stepIdx === 6) {
+                doctor.classList.remove('opacity-40', 'scale-90');
+                doctorBubble.innerHTML = '<span>কলা খেলে শক্তি বাড়ে!</span> <span>💪🍌</span>';
+                kidsRow.className = 'absolute bottom-2 right-0 left-24 sm:left-36 px-2 sm:px-6 flex justify-around items-end z-20 transition-all duration-500';
+                for (let i = 1; i <= 3; i++) { document.getElementById(`b-label-${i}`).classList.add('opacity-0'); }
+                playPopSound(1.05);
+            }
+            else if (stepIdx === 7) {
+                doctorBubble.innerHTML = '<span>চলো গুনে দেখি!</span> <span>🤔🍌</span>';
+                document.getElementById('question-title').textContent = 'তিনজনে মিলে কয়টি কলা খায়?';
+                document.getElementById('question-sub').textContent = 'কলাগুলোর ওপর ক্লিক করে ১ থেকে ৬ পর্যন্ত গুনতে পারো!';
+                document.getElementById('question-bubble').classList.remove('hidden');
+                playPopSound(1.15);
+            }
+            else if (stepIdx === 8) {
+                doctorBubble.innerHTML = '<span>প্রত্যেকে ২টি করে!</span> <span>🍌🍌</span>';
+                for (let i = 1; i <= 3; i++) { document.getElementById(`b-label-${i}`).classList.add('opacity-0'); }
+                [1, 2, 3].forEach((n, idx) => {
+                    scheduleStepAction(() => {
+                        const lbl = document.getElementById(`b-label-${n}`);
+                        const kidSvg = document.getElementById(`kid-svg-${n}`);
+                        lbl.classList.remove('opacity-0');
+                        lbl.classList.add('animate-pulse-glow');
+                        kidSvg.classList.add('animate-bounce');
+                        playPlantSound();
+                    }, idx * 750);
+                });
+            }
+            else if (stepIdx === 9) {
+                doctorBubble.innerHTML = '<span>২ + ২ + ২ = ৬</span> <span>🌟</span>';
+                configureEquationBoard('২', '৬', '🍌🍌 (২) + 🍌🍌 (২) + 🍌🍌 (২) = মোট ৬টি কলা!');
+                document.getElementById('b-plus-1-2').classList.remove('hidden');
+                document.getElementById('b-plus-2-3').classList.remove('hidden');
+                document.getElementById('equation-board').classList.remove('hidden');
+                [1, 2, 3].forEach((n, idx) => {
+                    scheduleStepAction(() => {
+                        document.getElementById(`b-label-${n}`).classList.add('animate-pulse-glow');
+                        document.getElementById(`eq-num-${n}`).classList.add('animate-pulse-glow', 'bg-yellow-300');
+                        playPopSound(1 + idx * 0.15);
+                    }, idx * 450);
+                });
+            }
+            else if (stepIdx === 10) {
+                doctorBubble.innerHTML = '<span>তিনবার ২ যোগ করলে ৬ হয়!</span> <span>👏</span>';
+                configureEquationBoard('২', '৬', '🍌🍌 (১ম বার ২) + 🍌🍌 (২য় বার ২) + 🍌🍌 (৩য় বার ২) = ৬টি কলা!');
+                document.getElementById('b-plus-1-2').classList.remove('hidden');
+                document.getElementById('b-plus-2-3').classList.remove('hidden');
+                document.getElementById('equation-board').classList.remove('hidden');
+                document.getElementById('step5-explainer').classList.remove('hidden');
+                for (let i = 1; i <= 3; i++) {
+                    document.getElementById(`b-label-${i}`).classList.add('animate-pulse-glow');
+                    document.getElementById(`eq-num-${i}`).classList.add('animate-pulse-glow', 'bg-yellow-300');
+                }
+                playPopSound(1.25);
+            }
+            else if (stepIdx === 11) {
+                doctorBubble.innerHTML = '<span>সাবাশ! মোট ৬টি কলা!</span> <span>🎉💪</span>';
+                document.getElementById('final-banner-text').textContent = 'তিনজনে মিলে মোট ৬টি কলা খায়! (১, ২, ৩, ৪, ৫, ৬)';
+                document.getElementById('final-banner-icon').textContent = '🍌';
+                document.getElementById('final-banner').classList.remove('hidden');
+                launchConfetti();
+                playCelebrationFanfare();
+                for (let i = 1; i <= 3; i++) {
+                    document.getElementById(`energy-${i}`).classList.remove('hidden');
+                    document.getElementById(`kid-svg-${i}`).classList.add('animate-bounce');
+                }
+                [1, 2, 3, 4, 5, 6].forEach((bNum, idx) => {
+                    scheduleStepAction(() => {
+                        const bBadge = document.getElementById(`b-count-${bNum}`);
+                        bBadge.classList.remove('hidden');
+                        playPopSound(0.9 + idx * 0.12);
+                    }, idx * 380);
+                });
+            }
+            else if (stepIdx === 12) {
+                ramalaBubble.innerHTML = '<span>চালতা, কমলা ও আপেল!</span> <span>🧺🍎</span>';
+                renderStory3IntroBaskets();
+                playPopSound(1.05);
+            }
+            else if (stepIdx === 13) {
+                ramalaBubble.innerHTML = '<span>৩টি করে ৫ বার চালতা!</span> <span>🍏</span>';
+                renderStory3FruitGroups('chalta', 5, 3, '৩', true);
+                configureStory3Equation(5, '৩', '১৫ টি চালতা', '', false);
+                [1, 2, 3, 4, 5].forEach((g, idx) => {
+                    scheduleStepAction(() => {
+                        const lbl = document.getElementById(`s3-label-${g}`);
+                        const eq = document.getElementById(`s3-eq-num-${g}`);
+                        if (lbl) lbl.classList.add('animate-pulse-glow');
+                        if (eq) eq.classList.add('animate-pulse-glow', 'bg-yellow-300');
+                        playPopSound(0.95 + idx * 0.1);
+                    }, idx * 350);
+                });
+            }
+            else if (stepIdx === 14) {
+                ramalaBubble.innerHTML = '<span>৩ পাঁচবার যোগ করলে ১৫ হয়!</span> <span>👏</span>';
+                renderStory3FruitGroups('chalta', 5, 3, '৩', true);
+                configureStory3Equation(5, '৩', '১৫টি', '🍏 ৩টি করে ৫ বার যোগ করলে (৩+৩+৩+৩+৩) = ১৫টি চালতা!', true);
+                for (let g = 1; g <= 5; g++) {
+                    document.getElementById(`s3-label-${g}`).classList.add('animate-pulse-glow');
+                    document.getElementById(`s3-eq-num-${g}`).classList.add('animate-pulse-glow', 'bg-yellow-300');
+                }
+                playPopSound(1.2);
+            }
+            else if (stepIdx === 15) {
+                ramalaBubble.innerHTML = '<span>মোট ১৫টি চালতা!</span> <span>🎉🍏</span>';
+                renderStory3FruitGroups('chalta', 5, 3, '৩', false);
+                document.getElementById('final-banner-text').textContent = 'রমলা মোট ১৫টি চালতা কিনেছিল!';
+                document.getElementById('final-banner-icon').textContent = '🍏';
+                document.getElementById('final-banner').classList.remove('hidden');
+                launchConfetti();
+                playCelebrationFanfare();
+                for (let f = 1; f <= 15; f++) {
+                    scheduleStepAction(() => {
+                        const badge = document.getElementById(`s3-count-${f}`);
+                        if (badge) badge.classList.remove('hidden');
+                        if (f % 3 === 0) playPopSound(0.9 + (f / 3) * 0.12);
+                    }, f * 140);
+                }
+            }
+            else if (stepIdx === 16) {
+                ramalaBubble.innerHTML = '<span>তারপর কমলা কিনলাম!</span> <span>🍊</span>';
+                renderStory3FruitGroups('orange', 3, 4, '৪', false);
+                document.getElementById('question-title').textContent = 'এবার কমলাগুলো দেখো!';
+                document.getElementById('question-sub').textContent = 'প্রতিটি ঝুড়িতে ৪টি করে ৩টি ঝুড়িতে কমলা আছে!';
+                document.getElementById('question-bubble').classList.remove('hidden');
+                playPopSound(1.1);
+            }
+            else if (stepIdx === 17) {
+                ramalaBubble.innerHTML = '<span>৪ + ৪ + ৪ = ১২টি কমলা!</span> <span>🍊</span>';
+                renderStory3FruitGroups('orange', 3, 4, '৪', true);
+                configureStory3Equation(3, '৪', '১২টি কমলা', '', false);
+                [1, 2, 3].forEach((g, idx) => {
+                    scheduleStepAction(() => {
+                        const lbl = document.getElementById(`s3-label-${g}`);
+                        const eq = document.getElementById(`s3-eq-num-${g}`);
+                        if (lbl) lbl.classList.add('animate-pulse-glow');
+                        if (eq) eq.classList.add('animate-pulse-glow', 'bg-yellow-300');
+                        playPopSound(0.95 + idx * 0.15);
+                    }, idx * 420);
+                });
+            }
+            else if (stepIdx === 18) {
+                ramalaBubble.innerHTML = '<span>৪ তিনবার যোগ করলে ১২ হয়!</span> <span>👏</span>';
+                renderStory3FruitGroups('orange', 3, 4, '৪', true);
+                configureStory3Equation(3, '৪', '১২ টি', '🍊 ৪টি করে ৩ বার যোগ করলে (৪+৪+৪) = ১২টি কমলা!', true);
+                for (let g = 1; g <= 3; g++) {
+                    document.getElementById(`s3-label-${g}`).classList.add('animate-pulse-glow');
+                    document.getElementById(`s3-eq-num-${g}`).classList.add('animate-pulse-glow', 'bg-yellow-300');
+                }
+                playPopSound(1.2);
+            }
+            else if (stepIdx === 19) {
+                ramalaBubble.innerHTML = '<span>মোট ১২টি কমলা!</span> <span>🎉🍊</span>';
+                renderStory3FruitGroups('orange', 3, 4, '৪', false);
+                document.getElementById('final-banner-text').textContent = 'রমলা মোট ১২ টি কমলা কিনেছিল!';
+                document.getElementById('final-banner-icon').textContent = '🍊';
+                document.getElementById('final-banner').classList.remove('hidden');
+                launchConfetti();
+                playCelebrationFanfare();
+                for (let f = 1; f <= 12; f++) {
+                    scheduleStepAction(() => {
+                        const badge = document.getElementById(`s3-count-${f}`);
+                        if (badge) badge.classList.remove('hidden');
+                        if (f % 4 === 0) playPopSound(0.95 + (f / 4) * 0.15);
+                    }, f * 170);
+                }
+            }
+            else if (stepIdx === 20) {
+                ramalaBubble.innerHTML = '<span>আবার লাল আপেলও কিনেছি!</span> <span>🍎</span>';
+                renderStory3FruitGroups('apple', 4, 5, '৫', false);
+                document.getElementById('question-title').textContent = 'এবার লাল আপেলগুলো দেখো!';
+                document.getElementById('question-sub').textContent = 'প্রতিটি ঝুড়িতে ৫টি করে ৪টি ঝুড়িতে আপেল আছে!';
+                document.getElementById('question-bubble').classList.remove('hidden');
+                playPopSound(1.1);
+            }
+            else if (stepIdx === 21) {
+                ramalaBubble.innerHTML = '<span>৫ + ৫ + ৫ + ৫ = ২০টি!</span> <span>🍎</span>';
+                renderStory3FruitGroups('apple', 4, 5, '৫', true);
+                configureStory3Equation(4, '৫', '২০ টি', '', false);
+                [1, 2, 3, 4].forEach((g, idx) => {
+                    scheduleStepAction(() => {
+                        const lbl = document.getElementById(`s3-label-${g}`);
+                        const eq = document.getElementById(`s3-eq-num-${g}`);
+                        if (lbl) lbl.classList.add('animate-pulse-glow');
+                        if (eq) eq.classList.add('animate-pulse-glow', 'bg-yellow-300');
+                        playPopSound(0.95 + idx * 0.12);
+                    }, idx * 380);
+                });
+            }
+            else if (stepIdx === 22) {
+                ramalaBubble.innerHTML = '<span>৫ চারবার যোগ করলে ২০ হয়!</span> <span>👏</span>';
+                renderStory3FruitGroups('apple', 4, 5, '৫', true);
+                configureStory3Equation(4, '৫', '২০ টি', '🍎 ৫টি করে ৪ বার যোগ করলে (৫+৫+৫+৫) = ২০টি আপেল!', true);
+                for (let g = 1; g <= 4; g++) {
+                    document.getElementById(`s3-label-${g}`).classList.add('animate-pulse-glow');
+                    document.getElementById(`s3-eq-num-${g}`).classList.add('animate-pulse-glow', 'bg-yellow-300');
+                }
+                playPopSound(1.25);
+            }
+            else if (stepIdx === 23) {
+                ramalaBubble.innerHTML = '<span>মোট ২০টি আপেল! দারুণ!</span> <span>🎉🍎</span>';
+                renderStory3FruitGroups('apple', 4, 5, '৫', false);
+                document.getElementById('final-banner-text').textContent = 'রমলা মোট ২০ টি আপেল কিনেছিল!';
+                document.getElementById('final-banner-icon').textContent = '🍎';
+                document.getElementById('final-banner').classList.remove('hidden');
+                launchConfetti();
+                playCelebrationFanfare();
+                for (let f = 1; f <= 20; f++) {
+                    scheduleStepAction(() => {
+                        const badge = document.getElementById(`s3-count-${f}`);
+                        if (badge) badge.classList.remove('hidden');
+                        if (f % 5 === 0) playPopSound(0.9 + (f / 5) * 0.12);
+                    }, f * 110);
+                }
+            }
+        }
+
+        function launchConfetti() {
+            const container = document.getElementById('confetti-layer');
+            container.innerHTML = '';
+            const colors = ['#f43f5e', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899'];
+            for (let i = 0; i < 45; i++) {
+                const conf = document.createElement('div');
+                conf.className = 'confetti';
+                conf.style.left = `${Math.random() * 100}%`;
+                conf.style.top = `-20px`;
+                conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                conf.style.transform = `rotate(${Math.random() * 360}deg)`;
+                conf.style.transition = `transform ${2 + Math.random() * 2}s linear, top ${2 + Math.random() * 2}s ease-in`;
+                container.appendChild(conf);
+
+                setTimeout(() => {
+                    conf.style.top = `${window.innerHeight}px`;
+                    conf.style.transform = `rotate(${Math.random() * 720}deg)`;
+                }, 50);
+            }
+        }
+
+        function nextStep() {
+            if (currentStepIndex < storySteps.length - 1) {
+                currentStepIndex++;
+                renderStepScene(currentStepIndex);
+            } else if (isAutoPlaying) {
+                stopAutoPlay();
+            }
+        }
+
+        function prevStep() {
+            stopAutoPlay();
+            if (currentStepIndex > 0) {
+                currentStepIndex--;
+                renderStepScene(currentStepIndex);
+            }
+        }
+
+        function goToStep(index) {
+            stopAutoPlay();
+            currentStepIndex = index;
+            renderStepScene(currentStepIndex);
+        }
+
+        function restartStory() {
+            stopAutoPlay();
+            currentStepIndex = 0;
+            renderStepScene(0);
+        }
+
+        function toggleAutoPlay() {
+            if (isAutoPlaying) {
+                stopAutoPlay();
+            } else {
+                startAutoPlay();
+            }
+        }
+
+        function startAutoPlay() {
+            isAutoPlaying = true;
+            document.getElementById('autoplay-icon').className = 'fas fa-pause';
+            document.getElementById('autoplay-text').textContent = 'থামো';
+            if (currentStepIndex === storySteps.length - 1) {
+                currentStepIndex = 0;
+                renderStepScene(0);
+            }
+            scheduleNextAutoStep();
+        }
+
+        function scheduleNextAutoStep() {
+            if (!isAutoPlaying) return;
+            const waitTime = currentStepIndex === 1 ? 5200 : 4000;
+            autoPlayTimer = setTimeout(() => {
+                if (!isAutoPlaying) return;
+                if (currentStepIndex < storySteps.length - 1) {
+                    currentStepIndex++;
+                    renderStepScene(currentStepIndex);
+                    scheduleNextAutoStep();
+                } else {
+                    stopAutoPlay();
+                }
+            }, waitTime);
+        }
+
+        function stopAutoPlay() {
+            isAutoPlaying = false;
+            if (autoPlayTimer) clearTimeout(autoPlayTimer);
+            document.getElementById('autoplay-icon').className = 'fas fa-play';
+            document.getElementById('autoplay-text').textContent = 'অটো প্লে';
+        }
+
+        function toggleSound() {
+            isMuted = !isMuted;
+            const icon = document.getElementById('mute-icon');
+            if (isMuted) {
+                if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+                icon.className = 'fas fa-volume-mute text-rose-600 text-lg';
+            } else {
+                icon.className = 'fas fa-music text-lg';
+                playPopSound(1);
+            }
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextStep();
+            if (e.key === 'ArrowLeft') prevStep();
+        });
+
+        window.onload = function () {
+            renderStepScene(0);
+        };
+    </script>
+</body>
+</html>
