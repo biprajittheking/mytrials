@@ -105,6 +105,11 @@
             transform: scale(0.95);
         }
 
+        /* Custom Large Child-Friendly Cursor on Interactive Stage */
+        #garden-stage, #garden-stage button, .sapling-spot, button {
+            cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 24 24' fill='%23f59e0b' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M5.5 3.5l14 8-6 2-3 7-5-17z'/></svg>"), pointer;
+        }
+
         /* Confetti Styling */
         .confetti {
             position: absolute;
@@ -116,10 +121,10 @@
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between p-2 sm:p-4 md:p-6">
+<body class="h-screen w-screen overflow-hidden flex flex-col p-2 sm:p-3">
 
     <!-- Top Header & Step Progress -->
-    <header class="w-full max-w-5xl mx-auto flex flex-col gap-2.5 bg-white/95 backdrop-blur-md px-4 py-3 rounded-3xl shadow-md border-4 border-emerald-400">
+    <header class="hidden w-full max-w-5xl mx-auto flex flex-col gap-2.5 bg-white/95 backdrop-blur-md px-4 py-3 rounded-3xl shadow-md border-4 border-emerald-400">
         <div class="flex flex-wrap items-center justify-between gap-2">
             <div class="flex items-center gap-3">
                 <div id="story-icon" class="w-11 h-11 rounded-2xl bg-emerald-500 flex items-center justify-center text-white text-2xl shadow-inner">
@@ -130,7 +135,7 @@
                         সোনালির গাছ লাগানোর গল্প
                     </h1>
                     <p class="text-xs sm:text-sm text-emerald-600 font-semibold">
-                        বার বার যোগের ধারণা ও অনুশীলন (ধাপ ১ - ৩০)
+                        বার বার যোগের ধারণা
                     </p>
                 </div>
             </div>
@@ -138,10 +143,10 @@
             <!-- Story Quick Switcher Pills -->
             <div class="flex flex-wrap items-center gap-1.5 bg-slate-100 p-1 rounded-2xl border-2 border-slate-300">
                 <button id="tab-story-1" onclick="goToStep(0)" class="px-2.5 sm:px-3 py-1 rounded-xl font-extrabold text-xs sm:text-sm transition-all bg-emerald-500 text-white shadow">
-                    🌱 গাছ (১+১)
+                    🌱 গাছ
                 </button>
                 <button id="tab-story-2" onclick="goToStep(6)" class="px-2.5 sm:px-3 py-1 rounded-xl font-extrabold text-xs sm:text-sm transition-all text-slate-700 hover:bg-amber-100">
-                    🍌 কলা (২+২)
+                    🍌 কলা 
                 </button>
                 <button id="tab-story-3" onclick="goToStep(12)" class="px-2.5 sm:px-3 py-1 rounded-xl font-extrabold text-xs sm:text-sm transition-all text-slate-700 hover:bg-rose-100">
                     🍎 ফল (রমলা)
@@ -149,48 +154,37 @@
                 <button id="tab-story-4" onclick="goToStep(24)" class="px-2.5 sm:px-3 py-1 rounded-xl font-extrabold text-xs sm:text-sm transition-all text-slate-700 hover:bg-purple-100">
                     ✏️ অনুশীলন
                 </button>
+                <button id="tab-story-5" onclick="goToStep(33)" class="px-2.5 sm:px-3 py-1 rounded-xl font-extrabold text-xs sm:text-sm transition-all text-slate-700 hover:bg-sky-100">
+                    🏫 শ্রেণি
+                </button>
             </div>
 
-            <!-- Audio & Voice Controls -->
-            <div class="flex items-center gap-2">
-                <button id="btn-speak" onclick="speakCurrentLine()" title="আবার শোনো" class="btn-kid bg-amber-400 hover:bg-amber-500 text-amber-950 font-bold px-3.5 py-1.5 rounded-2xl flex items-center gap-1.5 text-sm sm:text-base border-2 border-amber-600">
-                    <i class="fas fa-volume-up text-lg"></i>
-                    <span class="hidden sm:inline">পড়ে শোনাও</span>
-                </button>
-                <button id="btn-mute" onclick="toggleSound()" title="শব্দ চালু/বন্ধ" class="btn-kid bg-sky-100 hover:bg-sky-200 text-sky-800 font-bold p-2 rounded-2xl border-2 border-sky-400">
-                    <i id="mute-icon" class="fas fa-music text-lg"></i>
-                </button>
-            </div>
         </div>
 
-        <!-- Step Indicators (1 to 33) -->
+        <!-- Step Indicators (1 to 38) -->
         <div class="flex flex-wrap items-center justify-center gap-1 sm:gap-1.5 pt-1 border-t border-slate-200 overflow-x-auto max-h-16" id="step-dots">
-            <!-- Dynamically populated 1 to 33 -->
+            <!-- Dynamically populated 1 to 38 -->
         </div>
     </header>
 
     <!-- Main Story & Animation Stage -->
-    <main class="w-full max-w-5xl mx-auto my-3 flex-1 flex flex-col gap-3">
+    <main class="w-full h-full flex-1 flex flex-col gap-2 sm:gap-3">
 
-        <!-- Story Line Display Banner (Strictly the exact lines) -->
+        <!-- Story Line Display Banner -->
         <div class="relative bg-amber-50 border-4 border-amber-400 rounded-3xl p-4 sm:p-5 shadow-lg text-center flex flex-col items-center justify-center min-h-[115px] sm:min-h-[135px]">
-            <span id="step-badge" class="absolute -top-3.5 left-6 bg-emerald-600 text-white text-xs sm:text-sm font-bold px-3.5 py-0.5 rounded-full shadow">
-                ধাপ ১ / ৩৩
-            </span>
+            
 
-            <!-- Strictly matching the prompt's lines -->
             <h2 id="story-text" class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold text-slate-800 tracking-wide leading-snug transition-all duration-300 px-2">
                 সোনালি গাছ লাগাতে ভালোবাসে।
             </h2>
 
-            <!-- Subtle helper hint for teachers/students -->
             <p id="teacher-hint" class="text-xs sm:text-sm text-emerald-700 font-semibold mt-2 bg-emerald-100/80 px-3 py-1 rounded-full">
-                💡 নিচের "পরবর্তী ধাপ" বাটনে ক্লিক করে গল্পটি এগিয়ে নিন
+                💡 নিচের "পরবর্তী ধাপ" বাটনে ক্লিক করে গল্পটি এগিয়ে নিন
             </p>
         </div>
 
         <!-- Interactive Visual Canvas -->
-        <div id="garden-stage" class="relative w-full h-[360px] sm:h-[420px] md:h-[445px] rounded-3xl overflow-hidden shadow-xl border-4 border-emerald-500 bg-gradient-to-b from-sky-300 via-sky-200 to-emerald-200 select-none">
+        <div id="garden-stage" class="relative w-full flex-1 min-h-0 rounded-3xl overflow-hidden shadow-xl border-4 border-emerald-500 bg-gradient-to-b from-sky-300 via-sky-200 to-emerald-200 select-none">
 
             <!-- Confetti Layer -->
             <div id="confetti-layer" class="absolute inset-0 pointer-events-none overflow-hidden z-40"></div>
@@ -227,7 +221,7 @@
                 </svg>
             </div>
 
-            <!-- Floating Math Equation & Visual Counters Overlay (Shared across stories) -->
+            <!-- Floating Math Equation & Visual Counters Overlay -->
             <div id="math-overlay" class="absolute top-3 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center pointer-events-none w-11/12 max-w-xl">
                 <!-- Question Bubble -->
                 <div id="question-bubble" class="hidden bg-white/95 border-4 border-purple-500 rounded-3xl px-5 py-2.5 shadow-xl flex items-center gap-3 animate-pop">
@@ -239,7 +233,7 @@
                     <span class="text-3xl sm:text-4xl font-black text-pink-600 animate-bounce">❓</span>
                 </div>
 
-                <!-- Equation Board for Steps 4, 5 & Steps 10, 11 -->
+                <!-- Equation Board -->
                 <div id="equation-board" class="hidden bg-white/95 border-4 border-amber-500 rounded-3xl px-5 py-2.5 shadow-2xl flex flex-col items-center gap-1.5 animate-pop">
                     <div class="flex items-center gap-2 sm:gap-3.5 text-2xl sm:text-4xl font-black">
                         <span id="eq-num-1" class="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-emerald-100 border-3 border-emerald-500 text-emerald-800 flex items-center justify-center shadow">১</span>
@@ -252,7 +246,7 @@
                     </div>
                     <div id="step5-explainer" class="hidden bg-amber-100 border-2 border-amber-400 rounded-2xl px-3.5 py-1 text-center">
                         <span id="step5-explainer-text" class="text-xs sm:text-base font-extrabold text-amber-900">
-                            🌱 (১ম বার ১) + 🌱 (২য় বার ১) + 🌱 (৩য় বার ১) = মোট ৩টি চারা!
+                            🌱 (১ম বার ১) + 🌱 (২য় বার ১) + 🌱 (৩য় বার ১) = মোট ৩টি চারা!
                         </span>
                     </div>
                 </div>
@@ -356,7 +350,7 @@
                             <ellipse cx="60" cy="25" rx="52" ry="13" fill="#78350f" stroke="#451a03" stroke-width="3"/>
                             <ellipse cx="60" cy="22" rx="40" ry="8" fill="#92400e"/>
                         </svg>
-                        <span class="text-[11px] sm:text-xs font-bold text-emerald-950 bg-emerald-200/90 px-2.5 py-0.5 rounded-full -mt-1 mb-1">১ম জায়গা</span>
+                        <span class="text-[11px] sm:text-xs font-bold text-emerald-950 bg-emerald-200/90 px-2.5 py-0.5 rounded-full -mt-1 mb-1">১ম জায়গা</span>
                         <div id="label-1" class="opacity-0 transition-all duration-300 w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-yellow-300 border-4 border-amber-600 text-amber-950 font-black text-2xl sm:text-3xl flex items-center justify-center shadow-lg">১</div>
                     </div>
 
@@ -379,7 +373,7 @@
                             <ellipse cx="60" cy="25" rx="52" ry="13" fill="#78350f" stroke="#451a03" stroke-width="3"/>
                             <ellipse cx="60" cy="22" rx="40" ry="8" fill="#92400e"/>
                         </svg>
-                        <span class="text-[11px] sm:text-xs font-bold text-emerald-950 bg-emerald-200/90 px-2.5 py-0.5 rounded-full -mt-1 mb-1">২য় জায়গা</span>
+                        <span class="text-[11px] sm:text-xs font-bold text-emerald-950 bg-emerald-200/90 px-2.5 py-0.5 rounded-full -mt-1 mb-1">২য় জায়গা</span>
                         <div id="label-2" class="opacity-0 transition-all duration-300 w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-yellow-300 border-4 border-amber-600 text-amber-950 font-black text-2xl sm:text-3xl flex items-center justify-center shadow-lg">১</div>
                     </div>
 
@@ -401,19 +395,19 @@
                             <ellipse cx="60" cy="25" rx="52" ry="13" fill="#78350f" stroke="#451a03" stroke-width="3"/>
                             <ellipse cx="60" cy="22" rx="40" ry="8" fill="#92400e"/>
                         </svg>
-                        <span class="text-[11px] sm:text-xs font-bold text-emerald-950 bg-emerald-200/90 px-2.5 py-0.5 rounded-full -mt-1 mb-1">৩য় জায়গা</span>
+                        <span class="text-[11px] sm:text-xs font-bold text-emerald-950 bg-emerald-200/90 px-2.5 py-0.5 rounded-full -mt-1 mb-1">৩য় জায়গা</span>
                         <div id="label-3" class="opacity-0 transition-all duration-300 w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-yellow-300 border-4 border-amber-600 text-amber-950 font-black text-2xl sm:text-3xl flex items-center justify-center shadow-lg">১</div>
                     </div>
                 </div>
             </div>
 
             <!-- =========================================================
-                 SCENE 2: DOCTOR KAKU, HAREN, DAVID, NAJMA & BANANAS (STEPS 7 TO 12)
+                 SCENE 2: DOCTOR KAKU & BANANAS (STEPS 7 TO 12)
                  ========================================================= -->
             <div id="scene-story-2" class="hidden absolute inset-0">
                 <div id="doctor-container" class="absolute bottom-14 left-2 sm:left-5 z-20 w-24 sm:w-32 h-40 sm:h-48 pointer-events-none flex flex-col items-center transition-all duration-500">
                     <div id="doctor-bubble" class="mb-1 bg-white px-2.5 py-1 rounded-2xl shadow-md border-2 border-sky-500 text-[11px] sm:text-xs font-extrabold text-sky-800 flex items-center gap-1 animate-float whitespace-nowrap">
-                        <span>কলা খেলে শক্তি বাড়ে!</span> <span>💪🍌</span>
+                        <span>কলা খেলে শক্তি বাড়ে!</span> <span>💪🍌</span>
                     </div>
                     <svg viewBox="0 0 130 175" class="w-full h-full drop-shadow-md overflow-visible">
                         <path d="M 38 42 Q 65 18 92 42 Z" fill="#334155"/>
@@ -603,7 +597,7 @@
             </div>
 
             <!-- =========================================================
-                 SCENE 4: PRACTICE EXERCISE (STEPS 25 TO 30)
+                 SCENE 4: PRACTICE EXERCISE (STEPS 25 TO 33)
                  ========================================================= -->
             <div id="scene-exercise" class="hidden absolute inset-0 flex flex-col items-center justify-center p-4 z-20">
                 <div class="bg-white/95 border-4 border-purple-500 rounded-3xl p-4 sm:p-6 shadow-2xl max-w-lg w-full text-center flex flex-col gap-3 animate-pop">
@@ -618,7 +612,6 @@
                     </div>
 
                     <div id="ex-options-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-                        <!-- Dynamically populated options -->
                     </div>
 
                     <div id="ex-feedback" class="hidden font-extrabold text-base sm:text-lg px-3 py-1.5 rounded-xl">
@@ -626,11 +619,59 @@
                     </div>
                 </div>
             </div>
+
+            <!-- =========================================================
+                 SCENE 5: CLASSROOM STUDENTS STORY (STEPS 34 TO 38)
+                 ========================================================= -->
+            <div id="scene-classroom" class="hidden absolute inset-0 flex flex-col items-center justify-center p-4 z-20">
+                <div class="bg-white/95 border-4 border-sky-500 rounded-3xl p-4 sm:p-5 shadow-2xl max-w-2xl w-full text-center flex flex-col gap-2.5 animate-pop">
+                    <div class="flex items-center justify-center gap-2">
+                        <span class="text-3xl">🏫</span>
+                        <h3 class="text-lg sm:text-2xl font-black text-sky-900">শ্রেণিকক্ষে ছাত্র-ছাত্রী</h3>
+                    </div>
+
+                    <div class="bg-sky-50 border-3 border-sky-300 rounded-2xl p-3 flex flex-col items-center gap-2.5">
+                        <p id="class-problem-text" class="text-base sm:text-lg font-extrabold text-slate-800">বেঞ্চে দুজন করে ৬ জোড়া ছাত্র-ছাত্রী বসেছে (প্রতিটি বেঞ্চে ক্লিক করি!)</p>
+                        
+                        <!-- Visual Benches Grid matching the textbook illustration -->
+                        <div id="class-benches-area" class="grid grid-cols-2 sm:grid-cols-3 gap-3 py-1 w-full max-w-lg">
+                            <!-- Dynamically populated bench cards -->
+                        </div>
+
+                        <!-- Interactive Control & Total Counter -->
+                        <div class="flex flex-wrap items-center justify-center gap-3 w-full mt-1">
+                            <button onclick="revealAllBenches()" class="btn-kid bg-amber-400 hover:bg-amber-500 text-amber-950 font-bold px-4 py-1.5 rounded-xl text-sm border-2 border-amber-600">
+                                🌟 সবগুলো বেঞ্চ একসাথে দেখাও
+                            </button>
+                            <div class="bg-amber-100 border-2 border-amber-400 rounded-xl px-3 py-1 font-black text-amber-900 text-sm">
+                                মোট ছাত্র-ছাত্রী: <span id="classroom-total-count" class="text-lg text-pink-600">০</span> জন
+                            </div>
+                        </div>
+
+                        <!-- Equation Row -->
+                        <div id="class-eq-row" class="flex flex-wrap items-center justify-center gap-1 sm:gap-2 text-lg sm:text-2xl font-black text-sky-900">
+                            <span class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-sky-200 border-2 border-sky-600 flex items-center justify-center shadow">২</span>
+                            <span class="text-amber-600">+</span>
+                            <span class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-sky-200 border-2 border-sky-600 flex items-center justify-center shadow">২</span>
+                            <span class="text-amber-600">+</span>
+                            <span class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-sky-200 border-2 border-sky-600 flex items-center justify-center shadow">২</span>
+                            <span class="text-amber-600">+</span>
+                            <span class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-sky-200 border-2 border-sky-600 flex items-center justify-center shadow">২</span>
+                            <span class="text-amber-600">+</span>
+                            <span class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-sky-200 border-2 border-sky-600 flex items-center justify-center shadow">২</span>
+                            <span class="text-amber-600">+</span>
+                            <span class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-sky-200 border-2 border-sky-600 flex items-center justify-center shadow">২</span>
+                            <span class="text-amber-600">=</span>
+                            <span class="px-3 py-1 rounded-xl bg-amber-400 border-2 border-amber-600 text-amber-950 shadow">১২ জন</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </main>
 
     <!-- Bottom Interactive Controls Bar -->
-    <footer class="w-full max-w-5xl mx-auto bg-white/95 backdrop-blur-md p-3 sm:p-4 rounded-3xl shadow-lg border-4 border-emerald-400 flex flex-wrap items-center justify-center sm:justify-between gap-3">
+    <footer class="hidden w-full max-w-5xl mx-auto bg-white/95 backdrop-blur-md p-3 sm:p-4 rounded-3xl shadow-lg border-4 border-emerald-400 flex flex-wrap items-center justify-center sm:justify-between gap-3">
         <div class="flex items-center gap-2 sm:gap-3">
             <button id="btn-prev" onclick="prevStep()" class="btn-kid bg-slate-200 hover:bg-slate-300 text-slate-800 font-extrabold px-4 sm:px-6 py-2.5 sm:py-3 rounded-2xl text-base sm:text-xl flex items-center gap-2 border-2 border-slate-400">
                 <i class="fas fa-arrow-left"></i>
@@ -658,44 +699,44 @@
 
     <script>
         /* ==========================================
-         * 33 STORY & EXERCISE STEPS DATA
+         * STORY & EXERCISE STEPS DATA (38 Steps)
          * ========================================== */
         const storySteps = [
             // STORY 1: SONALI'S SAPLINGS (Steps 1 - 6)
-            { step: 1, story: 1, text: "সোনালি গাছ লাগাতে ভালোবাসে।" },
-            { step: 2, story: 1, text: "সোনালি একটি করে গাছের চারা তিন জায়গায় রোপণ করেছে", hint: "💡 দেখো, সোনালি একে একে ৩টি জায়গায় ১টি করে চারা লাগাচ্ছে (১, ১, ১)।" },
-            { step: 3, story: 1, text: "বলো তো , সে মোট কয়টি নতুন গাছের চারা রোপণ করলো" },
+            { step: 1, story: 1, text: "সোনালি গাছ লাগাতে ভালোবাসে।", hint: "💡 দেখো, সোনালি বাগানে এসে কত খুশি!" },
+            { step: 2, story: 1, text: "সোনালি একটি করে গাছের চারা তিন জায়গায় রোপণ করেছে", hint: "💡 দেখো, সোনালি একে একে ৩টি জায়গায় ১টি করে চারা লাগাচ্ছে (১, ১, ১)।" },
+            { step: 3, story: 1, text: "বলো তো , সে মোট কয়টি নতুন গাছের চারা রোপণ করলো", hint: "💡 বলো তো, সোনালি মোট কয়টি নতুন গাছের চারা রোপণ করেছে?" },
             { step: 4, story: 1, text: "১+১+১=৩", hint: "💡 ১টি চারা + ১টি চারা + ১টি চারা মিলে মোট ৩টি চারা হলো।" },
-            { step: 5, story: 1, text: "১ কে তিনবার যোগ করলে ৩ হবে।", hint: "💡 ১ সংখ্যাটি তিনবার যোগ করলে (১ + ১ + ১) যোগফল ৩ হয়।" },
-            { step: 6, story: 1, text: "তাই, সোনালি মোট ৩টি গাছের চারা রোপণ করেছে", hint: "🎉 সাবাশ!" },
+            { step: 5, story: 1, text: "১ কে তিনবার যোগ করলে ৩ হবে।", hint: "💡 ১ সংখ্যাটি তিনবার যোগ করলে (১ + ১ + ১) যোগফল ৩ হয়।" },
+            { step: 6, story: 1, text: "তাই, সোনালি মোট ৩টি গাছের চারা রোপণ করেছে", hint: "🎉 সাবাশ! পরের ধাপে ক্লিক করে ডাক্তার কাকু ও কলার গল্পে যাই!" },
 
             // STORY 2: DOCTOR KAKU & BANANAS (Steps 7 - 12)
             { step: 7, story: 2, text: "ডাক্তার কাকু বলেছেন যে কলা খেলে শরীরে শক্তি পাওয়া যায়। তাই হরেন, ডেভিড ও নাজমা দুটি করে কলা রোজ খায়।", hint: "💡 দেখো, ডাক্তার কাকু বলছেন এবং হরেন, ডেভিড ও নাজমা ২টি করে কলা খাচ্ছে।" },
-            { step: 8, story: 2, text: "এসো , তিনজন মাইল রোজ কয়টি কলা খায় দেখি -"},
-            { step: 9, story: 2, text: "দুটি করে কলা তিন জনে খায়,", hint: "💡 হরেন ২টি, ডেভিড ২টি এবং নাজমা ২টি করে কলা খায় (২, ২, ২)।" },
+            { step: 8, story: 2, text: "এসো , তিনজন মিলে রোজ কয়টি কলা খায় দেখি -" },
+            { step: 9, story: 2, text: "দুটি করে কলা তিন জনে খায়,", hint: "💡 হরেন ২টি, ডেভিড ২টি এবং নাজমা ২টি করে কলা খায় (২, ২, ২)।" },
             { step: 10, story: 2, text: "২+২+২=৬", hint: "💡 ২টি কলা + ২টি কলা + ২টি কলা মিলে মোট ৬টি কলা হলো।" },
-            { step: 11, story: 2, text: "২ তিনবার যোগে করলে ৬ হয়।", hint: "💡 ২ সংখ্যাটি তিনবার যোগ করলে (২ + ২ + ২) যোগফল ৬ হয়।" },
-            { step: 12, story: 2, text: "তিনজনে মিলে মোট ৬ টি কলা খায়", hint: "🎉 সাবাশ! " },
+            { step: 11, story: 2, text: "২ তিনবার যোগে করলে ৬ হয়।", hint: "💡 ২ সংখ্যাটি তিনবার যোগ করলে (২ + ২ + ২) যোগফল ৬ হয়।" },
+            { step: 12, story: 2, text: "তিনজনে মিলে মোট ৬ টি কলা খায়", hint: "🎉 সাবাশ! পরের ধাপে ক্লিক করে রমলার বাজার থেকে ফল কেনার গল্পে যাই!" },
 
             // STORY 3: RAMALA'S FRUITS (Steps 13 - 24)
             { step: 13, story: 3, text: "রমলা বাজার থেকে চালতা ,কমলা ও আপেল কিনেছিল। এসো, সে প্রতি ধরণের ফল কয়টি করে কিনেছিল দেখে নেই -", hint: "💡 দেখো, রমলা বাজার থেকে তিন রকমের ফল (চালতা, কমলা ও আপেল) কিনে এনেছে।" },
-            { step: 14, story: 3, text: "৩+৩+৩+৩+৩ =১৫ টি চালতা", hint: "💡 প্রতিটি ঝুড়িতে ৩টি করে মোট ৫টি ঝুড়িতে চালতা আছে। ঝুড়ির চালতায় ক্লিক করে গুনতে পারো!" },
-            { step: 15, story: 3, text: "৩টি করে ৫ বার = ১৫টি", hint: "💡 ৩ সংখ্যাটি ৫ বার যোগ করলে (৩+৩+৩+৩+৩) মোট ১৫টি হয়।" },
-            { step: 16, story: 3, text: "রমলা মো ১৫টি চালতা কিনেছিল।", hint: "🎉 সাবাশ! রমলা মোট ১৫টি চালতা কিনেছিল (১ থেকে ১৫ পর্যন্ত দেখো)।" },
-            { step: 17, story: 3, text: "তারপর", hint: "💡 এবার চলো দেখি রমলা কয়টি কমলা কিনেছিল!" },
-            { step: 18, story: 3, text: "৪+৪+৪= ১২টি কমলা", hint: "💡 প্রতিটি ঝুড়িতে ৪টি করে ৩টি ঝুড়িতে কমলা আছে। কমলাগুলোর ওপর ক্লিক করে গুনতে পারো!" },
-            { step: 19, story: 3, text: "৪টি করে ৩ বার = ১২ টি", hint: "💡 ৪ সংখ্যাটি ৩ বার যোগ করলে (৪+৪+৪) মোট ১২টি কমলা হয়।" },
+            { step: 14, story: 3, text: "৩+৩+৩+৩+৩ =১৫ টি চালতা", hint: "💡 প্রতিটি ঝুড়িতে ৩টি করে মোট ৫টি ঝুড়িতে চালতা আছে। ঝুড়ির চালতায় ক্লিক করে গুনতে পারি!" },
+            { step: 15, story: 3, text: "৩টি করে ৫ বার = ১৫টি", hint: "💡 ৩ সংখ্যাটি ৫ বার যোগ করলে (৩+৩+৩+৩+৩) মোট ১৫টি হয়।" },
+            { step: 16, story: 3, text: "রমলা মোট ১৫টি চালতা কিনেছিল।", hint: "🎉 সাবাশ! রমলা মোট ১৫টি চালতা কিনেছিল (১ থেকে ১৫ পর্যন্ত দেখো)।" },
+            { step: 17, story: 3, text: "তারপর", hint: "💡 এবার চলো দেখি রমলা কয়টি কমলা কিনেছিল!" },
+            { step: 18, story: 3, text: "৪+৪+৪= ১২টি কমলা", hint: "💡 প্রতিটি ঝুড়িতে ৪টি করে ৩টি ঝুড়িতে কমলা আছে। কমলাগুলোর ওপর ক্লিক করে গুনতে পারি!" },
+            { step: 19, story: 3, text: "৪টি করে ৩ বার = ১২ টি", hint: "💡 ৪ সংখ্যাটি ৩ বার যোগ করলে (৪+৪+৪) মোট ১২টি কমলা হয়।" },
             { step: 20, story: 3, text: "রমলা মোট ১২ টি কমলা কিনেছিল।", hint: "🎉 সাবাশ! রমলা মোট ১২টি কমলা কিনেছিল।" },
-            { step: 21, story: 3, text: "আবার ,", hint: "💡 এবার চলো দেখি রমলা কয়টি লাল আপেল কিনেছিল!" },
-            { step: 22, story: 3, text: "৫+৫+৫+৫ = ২0 টি", hint: "💡 প্রতিটি ঝুড়িতে ৫টি করে ৪টি ঝুড়িতে আপেল আছে। আপেলগুলোর ওপর ক্লিক করে গুনতে পারো!" },
-            { step: 23, story: 3, text: "৫ টি করে ৪ বার = ২0 টি", hint: "💡 ৫ সংখ্যাটি ৪ বার যোগ করলে (৫+৫+৫+৫) মোট ২০টি আপেল হয়।" },
-            { step: 24, story: 3, text: "রমলা মোট ২0 টি আপেল কিনেছিল।", hint: "🎉 দারুণ! তোমরা বার বার যোগের সবগুলো গল্প শিখে ফেলেছো!" },
+            { step: 21, story: 3, text: "আবার ,", hint: "💡 এবার চলো দেখি রমলা কয়টি লাল আপেল কিনেছিল!" },
+            { step: 22, story: 3, text: "৫+৫+৫+৫ = ২০ টি", hint: "💡 প্রতিটি ঝুড়িতে ৫টি করে ৪টি ঝুড়িতে আপেল আছে। আপেলগুলোর ওপর ক্লিক করে গুনতে পারি!" },
+            { step: 23, story: 3, text: "৫ টি করে ৪ বার = ২০ টি", hint: "💡 ৫ সংখ্যাটি ৪ বার যোগ করলে (৫+৫+৫+৫) মোট ২০টি আপেল হয়।" },
+            { step: 24, story: 3, text: "রমলা মোট ২০ টি আপেল কিনেছিল।", hint: "🎉 দারুণ!" },
 
             // STORY 4: PRACTICE EXERCISE (Steps 25 to 33)
             {
                 step: 25,
                 story: 4,
-                text: "অনুশীলন ১: সোনালি ১টি করে চারা ৩ জায়গায় লাগালে মোট কয়টি চারা হয়?",
+                text: "অনুশীলন ১: সোনালি ১টি করে চারা ৩ জায়গায় লাগালে মোট কয়টি চারা হয়?",
                 hint: "✏️ সঠিক উত্তরটি বেছে নাও!",
                 exercise: {
                     question: "১ + ১ + ১ = কত?",
@@ -709,7 +750,7 @@
             {
                 step: 26,
                 story: 4,
-                text: "অনুশীলন ২: হরেন, ডেভিড ও নাজমা ২টি করে কলা খেলে মোট কয়টি কলা হয়?",
+                text: "অনুশীলন ২: হরেন, ডেভিড ও নাজমা ২টি করে কলা খেলে মোট কয়টি কলা হয়?",
                 hint: "✏️ সঠিক উত্তরটি বেছে নাও!",
                 exercise: {
                     question: "২ + ২ + ২ = কত?",
@@ -723,7 +764,7 @@
             {
                 step: 27,
                 story: 4,
-                text: "অনুশীলন ৩: ৩টি করে ৫ বার চালতা কিনলে মোট কয়টি চালতা হয়?",
+                text: "অনুশীলন ৩: ৩টি করে ৫ বার চালতা কিনলে মোট কয়টি চালতা হয়?",
                 hint: "✏️ সঠিক উত্তরটি বেছে নাও!",
                 exercise: {
                     question: "৩টি করে ৫ বার = কত?",
@@ -737,7 +778,7 @@
             {
                 step: 28,
                 story: 4,
-                text: "অনুশীলন ৪: ৪টি করে ৩ বার কমলা কিনলে মোট কয়টি কমলা হয়?",
+                text: "অনুশীলন ৪: ৪টি করে ৩ বার কমলা কিনলে মোট কয়টি কমলা হয়?",
                 hint: "✏️ সঠিক উত্তরটি বেছে নাও!",
                 exercise: {
                     question: "৪টি করে ৩ বার = কত?",
@@ -751,7 +792,7 @@
             {
                 step: 29,
                 story: 4,
-                text: "অনুশীলন ৫: ৫টি করে ৪ বার আপেল কিনলে মোট কয়টি আপেল হয়?",
+                text: "অনুশীলন ৫: ৫টি করে ৪ বার আপেল কিনলে মোট কয়টি আপেল হয়?",
                 hint: "✏️ সঠিক উত্তরটি বেছে নাও!",
                 exercise: {
                     question: "৫টি করে ৪ বার = কত?",
@@ -765,7 +806,7 @@
             {
                 step: 30,
                 story: 4,
-                text: "অনুশীলন ৬: ৪টি করে কলা ৪ বার থাকলে মোট কয়টি কলা হয়?",
+                text: "অনুশীলন ৬: ৪টি করে কলা ৪ বার থাকলে মোট কয়টি কলা হয়?",
                 hint: "✏️ সঠিক উত্তরটি বেছে নাও!",
                 exercise: {
                     question: "৪টি করে কলা ৪ বার = কত?",
@@ -779,7 +820,7 @@
             {
                 step: 31,
                 story: 4,
-                text: "অনুশীলন ৭: ৩টি করে আম ৬ বার থাকলে মোট কয়টি আম হয়?",
+                text: "অনুশীলন ৭: ৩টি করে আম ৬ বার থাকলে মোট কয়টি আম হয়?",
                 hint: "✏️ সঠিক উত্তরটি বেছে নাও!",
                 exercise: {
                     question: "৩টি করে আম ৬ বার = কত?",
@@ -793,7 +834,7 @@
             {
                 step: 32,
                 story: 4,
-                text: "অনুশীলন ৮: ৪টি করে কলম ৫ বার থাকলে মোট কয়টি কলম হয়?",
+                text: "অনুশীলন ৮: ৪টি করে কলম ৫ বার থাকলে মোট কয়টি কলম হয়?",
                 hint: "✏️ সঠিক উত্তরটি বেছে নাও!",
                 exercise: {
                     question: "৪টি করে কলম ৫ বার = কত?",
@@ -807,8 +848,40 @@
             {
                 step: 33,
                 story: 4,
-                text: "অভিনন্দন! তুমি সফলভাবে সকল অনুশীলন সম্পন্ন করেছো!",
-                hint: "🎉 দারুণ কাজ করেছো! তুমি গণিতের চ্যাম্পিয়ন!"
+                text: "অভিনন্দন! আমরা সফলভাবে সকল অনুশীলন সম্পন্ন করেছি!",
+                hint: "🎉 দারুণ!"
+            },
+
+            // STORY 5: CLASSROOM STUDENTS (Steps 34 to 38)
+            {
+                step: 34,
+                story: 5,
+                text: "শ্রেণিকক্ষে বেঞ্চে ছাত্র-ছাত্রীরা বসেছে। এসো দেখি মোট কতজন ছাত্র-ছাত্রী আছে -",
+                hint: "🏫 দেখো, শ্রেণিকক্ষে বেঞ্চগুলোতে দুজন করে ছাত্র-ছাত্রী বসেছে।"
+            },
+            {
+                step: 35,
+                story: 5,
+                text: "মোট ছাত্র-ছাত্রীর সংখ্যা = ২ + ২ + ২ + ২ + ২ + ২ জন",
+                hint: "💡 প্রতি বেঞ্চে ২ জন করে মোট ৬টি বেঞ্চে ছাত্র-ছাত্রী বসেছে।"
+            },
+            {
+                step: 36,
+                story: 5,
+                text: "২ জন করে ৬ বার = ১২ জন ছাত্র-ছাত্রী",
+                hint: "💡 ২ সংখ্যাটি ৬ বার যোগ করলে (২+২+২+২+২+২) মোট ১২ জন হয়।"
+            },
+            {
+                step: 37,
+                story: 5,
+                text: "শ্রেণিকক্ষে মোট ১২ জন ছাত্র-ছাত্রী রয়েছে।",
+                hint: "🎉 চমৎকার! শ্রেণিকক্ষের হিসাবটিও তোমরা শিখে গেলে!"
+            },
+            {
+                step: 38,
+                story: 5,
+                text: "অভিনন্দন! আমরা সফলভাবে পাঠের সবকিছু শেষ করতে পেরেছি!",
+                hint: "🌟ধন্যবাদ !"
             }
         ];
 
@@ -816,7 +889,7 @@
             '০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯', '১০',
             '১১', '১২', '১৩', '১৪', '১৫', '১৬', '১৭', '১৮', '১৯', '২০',
             '২১', '২২', '২৩', '২৪', '২৫', '২৬', '২৭', '২৮', '২৯', '৩০',
-            '৩১', '৩২', '৩৩'
+            '৩১', '৩২', '৩৩', '৩৪', '৩৫', '৩৬', '৩৭', '৩৮'
         ];
 
         let currentStepIndex = 0;
@@ -880,40 +953,11 @@
             });
         }
 
-        function speakText(text) {
-            if (isMuted || !('speechSynthesis' in window)) return;
-            try {
-                window.speechSynthesis.cancel();
-                let spokenString = text
-                    .replace("১+১+১=৩", "এক যোগ এক যোগ এক সমান তিন")
-                    .replace("২+২+২=৬", "দুই যোগ দুই যোগ দুই সমান ছয়")
-                    .replace("৩+৩+৩+৩+৩ =১৫", "তিন যোগ তিন যোগ তিন যোগ তিন যোগ তিন সমান পনেরো")
-                    .replace("৪+৪+৪= ১২", "চার যোগ চার যোগ চার সমান বারো")
-                    .replace("৫+৫+৫+৫ = ২0", "পাঁচ যোগ পাঁচ যোগ পাঁচ যোগ পাঁচ সমান বিশ")
-                    .replace(/২0/g, "২০")
-                    .replace("রমলা মো ১৫টি", "রমলা মোট ১৫টি")
-                    .replace("কোলা", "কলা")
-                    .replace("মাইল", "মিলে");
-                const utterance = new SpeechSynthesisUtterance(spokenString);
-                utterance.lang = 'bn-BD';
-                utterance.rate = 0.88;
-                utterance.pitch = 1.1;
-                const voices = window.speechSynthesis.getVoices();
-                const bnVoice = voices.find(v => v.lang.includes('bn') || v.lang.includes('BN'));
-                if (bnVoice) utterance.voice = bnVoice;
-                window.speechSynthesis.speak(utterance);
-            } catch (e) {}
-        }
-
-        function speakCurrentLine() {
-            speakText(storySteps[currentStepIndex].text);
-        }
-
         function renderStepDots() {
             const container = document.getElementById('step-dots');
             container.innerHTML = '';
             storySteps.forEach((s, idx) => {
-                if (idx === 6 || idx === 12 || idx === 24) {
+                if (idx === 6 || idx === 12 || idx === 24 || idx === 33) {
                     const divider = document.createElement('span');
                     divider.className = 'mx-0.5 text-slate-400 font-bold text-xs';
                     divider.textContent = '|';
@@ -937,6 +981,9 @@
                 } else if (storyNum === 4) {
                     activeStyle = 'bg-purple-600 text-white border-purple-900 scale-110 shadow-md';
                     doneStyle = 'bg-purple-200 text-purple-900 border-purple-400';
+                } else if (storyNum === 5) {
+                    activeStyle = 'bg-sky-600 text-white border-sky-900 scale-110 shadow-md';
+                    doneStyle = 'bg-sky-200 text-sky-900 border-sky-400';
                 }
 
                 btn.className = `w-6 h-6 sm:w-7 sm:h-7 rounded-full font-extrabold text-[11px] sm:text-xs transition-all border-2 flex items-center justify-center shrink-0 ${
@@ -964,7 +1011,7 @@
                 tab2.className = 'px-2.5 sm:px-3 py-1 rounded-xl font-extrabold text-xs sm:text-sm transition-all bg-amber-500 text-amber-950 shadow';
             } else if (currentStepIndex < 24) {
                 tab3.className = 'px-2.5 sm:px-3 py-1 rounded-xl font-extrabold text-xs sm:text-sm transition-all bg-rose-500 text-white shadow';
-            } else {
+            } else if (currentStepIndex < 33) {
                 tab4.className = 'px-2.5 sm:px-3 py-1 rounded-xl font-extrabold text-xs sm:text-sm transition-all bg-purple-500 text-white shadow';
             }
         }
@@ -973,51 +1020,107 @@
             const sapling = document.getElementById(`sapling-${spotNum}`);
             const label = document.getElementById(`label-${spotNum}`);
             if (visible) {
-                sapling.classList.remove('hidden');
-                if (animate) {
-                    sapling.classList.remove('animate-grow');
-                    void sapling.offsetWidth;
-                    sapling.classList.add('animate-grow');
+                if (sapling) {
+                    sapling.classList.remove('hidden');
+                    if (animate) {
+                        sapling.classList.remove('animate-grow');
+                        void sapling.offsetWidth;
+                        sapling.classList.add('animate-grow');
+                    }
                 }
-                label.classList.remove('opacity-0');
-                label.classList.add('opacity-100');
+                if (label) {
+                    label.classList.remove('opacity-0');
+                    label.classList.add('opacity-100');
+                }
             } else {
-                sapling.classList.add('hidden');
-                sapling.classList.remove('animate-grow');
-                label.classList.remove('opacity-100', 'animate-pulse-glow');
-                label.classList.add('opacity-0');
+                if (sapling) {
+                    sapling.classList.add('hidden');
+                    sapling.classList.remove('animate-grow');
+                }
+                if (label) {
+                    label.classList.remove('opacity-100', 'animate-pulse-glow');
+                    label.classList.add('opacity-0');
+                }
             }
         }
 
         function resetOverlays() {
-            document.getElementById('question-bubble').classList.add('hidden');
-            document.getElementById('equation-board').classList.add('hidden');
-            document.getElementById('step5-explainer').classList.add('hidden');
-            document.getElementById('s3-equation-board').classList.add('hidden');
-            document.getElementById('s3-explainer').classList.add('hidden');
-            document.getElementById('final-banner').classList.add('hidden');
-            document.getElementById('water-drops').classList.add('hidden');
-            document.getElementById('plus-1-2').classList.add('hidden');
-            document.getElementById('plus-2-3').classList.add('hidden');
-            document.getElementById('b-plus-1-2').classList.add('hidden');
-            document.getElementById('b-plus-2-3').classList.add('hidden');
-            document.getElementById('confetti-layer').innerHTML = '';
+            const qBubble = document.getElementById('question-bubble');
+            if (qBubble) qBubble.classList.add('hidden');
+
+            const eqBoard = document.getElementById('equation-board');
+            if (eqBoard) eqBoard.classList.add('hidden');
+
+            const stepExplainer = document.getElementById('step5-explainer');
+            if (stepExplainer) stepExplainer.classList.add('hidden');
+
+            const s3EqBoard = document.getElementById('s3-equation-board');
+            if (s3EqBoard) s3EqBoard.classList.add('hidden');
+
+            const s3Explainer = document.getElementById('s3-explainer');
+            if (s3Explainer) s3Explainer.classList.add('hidden');
+
+            const finalBanner = document.getElementById('final-banner');
+            if (finalBanner) finalBanner.classList.add('hidden');
+
+            const waterDrops = document.getElementById('water-drops');
+            if (waterDrops) waterDrops.classList.add('hidden');
+
+            const plus12 = document.getElementById('plus-1-2');
+            if (plus12) plus12.classList.add('hidden');
+
+            const plus23 = document.getElementById('plus-2-3');
+            if (plus23) plus23.classList.add('hidden');
+
+            const bPlus12 = document.getElementById('b-plus-1-2');
+            if (bPlus12) bPlus12.classList.add('hidden');
+
+            const bPlus23 = document.getElementById('b-plus-2-3');
+            if (bPlus23) bPlus23.classList.add('hidden');
+
+            const confettiLayer = document.getElementById('confetti-layer');
+            if (confettiLayer) confettiLayer.innerHTML = '';
 
             for (let i = 1; i <= 3; i++) {
-                document.getElementById(`label-${i}`).classList.remove('animate-pulse-glow', 'bg-emerald-400');
-                document.getElementById(`label-${i}`).classList.add('bg-yellow-300');
-                document.getElementById(`top-count-${i}`).classList.add('hidden');
-                document.getElementById(`flower-${i}`).classList.add('hidden');
-                document.getElementById(`eq-num-${i}`).classList.remove('animate-pulse-glow', 'bg-yellow-300');
+                const lbl = document.getElementById(`label-${i}`);
+                if (lbl) {
+                    lbl.classList.remove('animate-pulse-glow', 'bg-emerald-400');
+                    lbl.classList.add('bg-yellow-300');
+                }
+                const topCount = document.getElementById(`top-count-${i}`);
+                if (topCount) topCount.classList.add('hidden');
+                
+                const flower = document.getElementById(`flower-${i}`);
+                if (flower) flower.classList.add('hidden');
+                
+                const eqNum = document.getElementById(`eq-num-${i}`);
+                if (eqNum) eqNum.classList.remove('animate-pulse-glow', 'bg-yellow-300');
 
-                document.getElementById(`b-label-${i}`).classList.remove('animate-pulse-glow', 'opacity-0');
-                document.getElementById(`energy-${i}`).classList.add('hidden');
-                document.getElementById(`kid-svg-${i}`).classList.remove('animate-bounce');
+                const bLbl = document.getElementById(`b-label-${i}`);
+                if (bLbl) bLbl.classList.remove('animate-pulse-glow', 'opacity-0');
+                
+                const energy = document.getElementById(`energy-${i}`);
+                if (energy) energy.classList.add('hidden');
+                
+                const kidSvg = document.getElementById(`kid-svg-${i}`);
+                if (kidSvg) kidSvg.classList.remove('animate-bounce');
             }
 
             for (let b = 1; b <= 6; b++) {
-                document.getElementById(`b-count-${b}`).classList.add('hidden');
+                const bCount = document.getElementById(`b-count-${b}`);
+                if (bCount) bCount.classList.add('hidden');
             }
+        }
+
+        function configureEquationBoard(numStr, totalStr, explainerStr) {
+            for (let i = 1; i <= 3; i++) {
+                const eqNum = document.getElementById(`eq-num-${i}`);
+                if (eqNum) eqNum.textContent = numStr;
+            }
+            const eqTotal = document.getElementById('eq-total');
+            if (eqTotal) eqTotal.textContent = totalStr;
+            const expText = document.getElementById('step5-explainer-text');
+            if (expText) expText.textContent = explainerStr;
         }
 
         function getFruitSvg(type) {
@@ -1055,12 +1158,13 @@
         }
 
         function renderExerciseSlide(exData) {
-            document.getElementById('ex-problem-text').textContent = exData.question;
+            const probText = document.getElementById('ex-problem-text');
+            if (probText) probText.textContent = exData.question;
             const visualBox = document.getElementById('ex-visual-icons');
+            if (!visualBox) return;
             visualBox.innerHTML = '';
             visualBox.className = 'flex flex-wrap items-center justify-center gap-2 sm:gap-3 py-1';
 
-            // Generate structured baskets/groups for exercise visuals
             for (let g = 0; g < exData.count; g++) {
                 const basketGroup = document.createElement('div');
                 basketGroup.className = 'bg-white/90 border-2 border-purple-300 rounded-xl p-1.5 shadow-sm flex flex-wrap items-center justify-center gap-1 max-w-[95px]';
@@ -1089,9 +1193,10 @@
             }
 
             const feedbackEl = document.getElementById('ex-feedback');
-            feedbackEl.classList.add('hidden');
+            if (feedbackEl) feedbackEl.classList.add('hidden');
 
             const grid = document.getElementById('ex-options-grid');
+            if (!grid) return;
             grid.innerHTML = '';
 
             exData.options.forEach((opt, idx) => {
@@ -1101,75 +1206,45 @@
                 btn.onclick = () => {
                     if (idx === exData.correctIndex) {
                         btn.className = 'btn-kid bg-emerald-500 text-white border-3 border-emerald-700 font-black text-lg sm:text-xl py-3 rounded-2xl shadow animate-bounce';
-                        feedbackEl.textContent = '🎉 অসাধারণ! সঠিক উত্তর!';
-                        feedbackEl.className = 'bg-emerald-100 text-emerald-800 border-2 border-emerald-400 font-extrabold text-base px-3 py-1.5 rounded-xl block';
+                        if (feedbackEl) {
+                            feedbackEl.textContent = '🎉 অসাধারণ! সঠিক উত্তর!';
+                            feedbackEl.className = 'bg-emerald-100 text-emerald-800 border-2 border-emerald-400 font-extrabold text-base px-3 py-1.5 rounded-xl block';
+                        }
                         playCelebrationFanfare();
                         launchConfetti();
-                        speakText('সঠিক উত্তর!');
                     } else {
                         btn.className = 'btn-kid bg-rose-200 text-rose-900 border-3 border-rose-400 font-black text-lg sm:text-xl py-3 rounded-2xl shadow';
-                        feedbackEl.textContent = '❌ আবার চেষ্টা করো!';
-                        feedbackEl.className = 'bg-rose-100 text-rose-800 border-2 border-rose-400 font-extrabold text-base px-3 py-1.5 rounded-xl block';
+                        if (feedbackEl) {
+                            feedbackEl.textContent = '❌ আবার চেষ্টা করো!';
+                            feedbackEl.className = 'bg-rose-100 text-rose-800 border-2 border-rose-400 font-extrabold text-base px-3 py-1.5 rounded-xl block';
+                        }
                         playTone(200, 'sawtooth', 0.2);
-                        speakText('আবার চেষ্টা করো');
                     }
                 };
                 grid.appendChild(btn);
             });
         }
 
-        function interactWithStory3Fruit(num, fruitNameBn) {
-            const badge = document.getElementById(`s3-count-${num}`);
-            const fruitEl = document.getElementById(`s3-fruit-${num}`);
-            if (!badge || !fruitEl) return;
-            badge.classList.remove('hidden');
-            fruitEl.classList.remove('animate-pop');
-            void fruitEl.offsetWidth;
-            fruitEl.classList.add('animate-pop');
-            playPopSound(0.85 + (num % 8) * 0.08);
-            speakText(`${bengaliDigits[num]}টি ${fruitNameBn}`);
-        }
-
-        function interactWithSapling(spotNum) {
-            const topBadge = document.getElementById(`top-count-${spotNum}`);
-            const sapling = document.getElementById(`sapling-${spotNum}`);
-            if (!topBadge || !sapling) return;
-            topBadge.textContent = bengaliDigits[spotNum];
-            topBadge.classList.remove('hidden');
-            sapling.classList.remove('animate-grow');
-            void sapling.offsetWidth;
-            sapling.classList.add('animate-grow');
-            playPopSound(1.1 + spotNum * 0.1);
-            speakText(`${bengaliDigits[spotNum]} নম্বর চারা`);
-        }
-
-        function interactWithBanana(bananaNum) {
-            const bBadge = document.getElementById(`b-count-${bananaNum}`);
-            if (!bBadge) return;
-            bBadge.classList.remove('hidden');
-            playPopSound(1.05 + bananaNum * 0.08);
-            speakText(`${bengaliDigits[bananaNum]} নম্বর কলা`);
-        }
-
         function renderStory3IntroBaskets() {
             const container = document.getElementById('ramala-baskets-area');
+            if (!container) return;
             container.innerHTML = `
-                <div class="flex flex-col items-center bg-white/90 border-3 border-rose-400 rounded-2xl p-2 shadow-md">
-                    <span class="text-xs font-black text-rose-800 mb-1">চালতা (১৫টি)</span>
-                    <div class="flex gap-1">
-                        <div class="w-8 h-8 rounded-xl bg-lime-200 border-2 border-lime-600 flex items-center justify-center font-black text-xs text-lime-900">৩×৫</div>
+                <div class="flex flex-col items-center bg-white/95 border-3 border-rose-400 rounded-3xl p-3 shadow-lg gap-2">
+                    <span class="text-sm sm:text-base font-black text-rose-900">চালতা</span>
+                    <div class="w-16 h-14 sm:w-20 sm:h-16 rounded-2xl bg-amber-100 border-3 border-amber-600 flex items-center justify-center shadow-inner text-2xl">
+                        🧺
                     </div>
                 </div>
-                <div class="flex flex-col items-center bg-white/90 border-3 border-rose-400 rounded-2xl p-2 shadow-md">
-                    <span class="text-xs font-black text-rose-800 mb-1">কমলা (১২টি)</span>
-                    <div class="flex gap-1">
-                        <div class="w-8 h-8 rounded-xl bg-orange-200 border-2 border-orange-600 flex items-center justify-center font-black text-xs text-orange-900">৪×৩</div>
+                <div class="flex flex-col items-center bg-white/95 border-3 border-rose-400 rounded-3xl p-3 shadow-lg gap-2">
+                    <span class="text-sm sm:text-base font-black text-rose-900">কমলা</span>
+                    <div class="w-16 h-14 sm:w-20 sm:h-16 rounded-2xl bg-amber-100 border-3 border-amber-600 flex items-center justify-center shadow-inner text-2xl">
+                        🧺
                     </div>
                 </div>
-                <div class="flex flex-col items-center bg-white/90 border-3 border-rose-400 rounded-2xl p-2 shadow-md">
-                    <span class="text-xs font-black text-rose-800 mb-1">আপেল (২০টি)</span>
-                    <div class="flex gap-1">
-                        <div class="w-8 h-8 rounded-xl bg-rose-200 border-2 border-rose-600 flex items-center justify-center font-black text-xs text-rose-900">৫×৪</div>
+                <div class="flex flex-col items-center bg-white/95 border-3 border-rose-400 rounded-3xl p-3 shadow-lg gap-2">
+                    <span class="text-sm sm:text-base font-black text-rose-900">আপেল</span>
+                    <div class="w-16 h-14 sm:w-20 sm:h-16 rounded-2xl bg-amber-100 border-3 border-amber-600 flex items-center justify-center shadow-inner text-2xl">
+                        🧺
                     </div>
                 </div>
             `;
@@ -1177,6 +1252,7 @@
 
         function renderStory3FruitGroups(fruitType, numGroups, perGroup, groupLabelBn, showBadges) {
             const container = document.getElementById('ramala-baskets-area');
+            if (!container) return;
             container.innerHTML = '';
             let fruitCounter = 1;
 
@@ -1197,11 +1273,20 @@
                     const currentFruitId = fruitCounter++;
                     const fruitWrapper = document.createElement('div');
                     fruitWrapper.className = 'sapling-spot relative flex items-center justify-center';
-                    fruitWrapper.onclick = () => interactWithStory3Fruit(currentFruitId, fruitType);
+                    fruitWrapper.onclick = () => {
+                        const fruitEl = document.getElementById(`s3-fruit-${currentFruitId}`);
+                        if (fruitEl) {
+                            fruitEl.classList.remove('animate-pop');
+                            void fruitEl.offsetWidth;
+                            fruitEl.classList.add('animate-pop');
+                        }
+                        playPopSound(0.85 + (currentFruitId % 8) * 0.08);
+                    };
 
                     const countBadge = document.createElement('span');
                     countBadge.id = `s3-count-${currentFruitId}`;
-                    countBadge.className = `${showBadges ? '' : 'hidden'} absolute -top-4 bg-pink-600 text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center border border-white shadow z-30 animate-pop`;
+                    // Removed individual item numbering badges completely
+                    countBadge.className = 'hidden';
                     countBadge.textContent = bengaliDigits[currentFruitId];
                     fruitWrapper.appendChild(countBadge);
 
@@ -1222,6 +1307,7 @@
             const row = document.getElementById('s3-eq-row');
             const explainer = document.getElementById('s3-explainer');
             const explainerSpan = document.getElementById('s3-explainer-text');
+            if (!board || !row) return;
             row.innerHTML = '';
 
             for (let i = 0; i < numGroups; i++) {
@@ -1251,20 +1337,95 @@
 
             board.classList.remove('hidden');
 
-            if (showExplainer) {
+            if (showExplainer && explainer && explainerSpan) {
                 explainerSpan.textContent = explainerText;
                 explainer.classList.remove('hidden');
-            } else {
+            } else if (explainer) {
                 explainer.classList.add('hidden');
             }
         }
 
-        function configureEquationBoard(numStr, totalStr, explainerStr) {
-            for (let i = 1; i <= 3; i++) {
-                document.getElementById(`eq-num-${i}`).textContent = numStr;
+        function interactWithSapling(spotNum) {
+            const topBadge = document.getElementById(`top-count-${spotNum}`);
+            const sapling = document.getElementById(`sapling-${spotNum}`);
+            if (!topBadge || !sapling) return;
+            topBadge.textContent = bengaliDigits[spotNum];
+            topBadge.classList.remove('hidden');
+            sapling.classList.remove('animate-grow');
+            void sapling.offsetWidth;
+            sapling.classList.add('animate-grow');
+            playPopSound(1.1 + spotNum * 0.1);
+        }
+
+        function interactWithBanana(bananaNum) {
+            const bBadge = document.getElementById(`b-count-${bananaNum}`);
+            if (!bBadge) return;
+            bBadge.classList.remove('hidden');
+            playPopSound(1.05 + bananaNum * 0.08);
+        }
+
+        let activeBenchesCount = 0;
+
+        function renderClassroomBenches(highlightCount) {
+            activeBenchesCount = highlightCount;
+            const container = document.getElementById('class-benches-area');
+            const totalCountEl = document.getElementById('classroom-total-count');
+            if (!container) return;
+            container.innerHTML = '';
+
+            let currentTotal = highlightCount * 2;
+            if (totalCountEl) totalCountEl.textContent = bengaliDigits[currentTotal] || currentTotal;
+
+            for (let b = 1; b <= 6; b++) {
+                const isHighlighted = b <= highlightCount;
+                const benchCard = document.createElement('div');
+                benchCard.className = `sapling-spot bg-white/95 border-3 ${isHighlighted ? 'border-amber-500 bg-amber-50 shadow-lg scale-105' : 'border-sky-300 hover:border-sky-500'} rounded-2xl p-2.5 flex flex-col items-center gap-1.5 transition-all duration-300`;
+                
+                benchCard.onclick = () => {
+                    if (b <= activeBenchesCount) {
+                        activeBenchesCount = b - 1;
+                    } else {
+                        activeBenchesCount = b;
+                    }
+                    renderClassroomBenches(activeBenchesCount);
+                    playPopSound(1 + activeBenchesCount * 0.1);
+                };
+
+                benchCard.innerHTML = `
+                    <div class="flex items-center justify-between w-full px-1">
+                        <span class="text-xs font-black text-sky-900">বেঞ্চ ${bengaliDigits[b]}</span>
+                        <span class="text-xs font-extrabold ${isHighlighted ? 'text-pink-600' : 'text-slate-400'}">${isHighlighted ? '২ জন' : 'ক্লিক করো'}</span>
+                    </div>
+                    <!-- Wooden Bench Illustration with 2 Students sitting side by side -->
+                    <div class="relative w-full h-14 flex items-center justify-center bg-gradient-to-b from-sky-100 to-sky-200 rounded-xl border border-sky-300 overflow-hidden">
+                        <!-- Student 1 (Left) -->
+                        <div class="flex flex-col items-center -mr-1 ${isHighlighted ? 'animate-bounce' : 'opacity-60'}" style="animation-delay: ${b * 0.1}s;">
+                            <svg viewBox="0 0 40 50" class="w-8 h-10 drop-shadow">
+                                <circle cx="20" cy="14" r="9" fill="#fed7aa" stroke="#9a3412" stroke-width="1.5"/>
+                                <path d="M 12 12 Q 20 4 28 12 Z" fill="#1e293b"/>
+                                <rect x="11" y="23" width="18" height="20" rx="4" fill="#3b82f6" stroke="#1d4ed8" stroke-width="1.5"/>
+                            </svg>
+                        </div>
+                        <!-- Student 2 (Right) -->
+                        <div class="flex flex-col items-center -ml-1 ${isHighlighted ? 'animate-bounce' : 'opacity-60'}" style="animation-delay: ${b * 0.15}s;">
+                            <svg viewBox="0 0 40 50" class="w-8 h-10 drop-shadow">
+                                <circle cx="20" cy="14" r="9" fill="#fdba74" stroke="#9a3412" stroke-width="1.5"/>
+                                <path d="M 10 10 Q 20 2 30 10 Z" fill="#78350f"/>
+                                <rect x="11" y="23" width="18" height="20" rx="4" fill="#f97316" stroke="#c2410c" stroke-width="1.5"/>
+                            </svg>
+                        </div>
+                        <!-- Wooden Bench Seat -->
+                        <div class="absolute bottom-1 w-11/12 h-3 bg-amber-700 border border-amber-900 rounded-sm shadow-inner"></div>
+                    </div>
+                `;
+                container.appendChild(benchCard);
             }
-            document.getElementById('eq-total').textContent = totalStr;
-            document.getElementById('step5-explainer-text').textContent = explainerStr;
+        }
+
+        function revealAllBenches() {
+            renderClassroomBenches(6);
+            playCelebrationFanfare();
+            launchConfetti();
         }
 
         function renderStepScene(stepIdx) {
@@ -1283,61 +1444,112 @@
             const scene2 = document.getElementById('scene-story-2');
             const scene3 = document.getElementById('scene-story-3');
             const sceneEx = document.getElementById('scene-exercise');
+            const sceneClass = document.getElementById('scene-classroom');
 
-            badgeEl.textContent = `ধাপ ${bengaliDigits[stepIdx + 1]} / ৩৩`;
-            storyTextEl.classList.remove('animate-pop');
-            void storyTextEl.offsetWidth;
-            storyTextEl.textContent = stepData.text;
-            storyTextEl.classList.add('animate-pop');
-            hintEl.textContent = stepData.hint;
+            if (badgeEl) badgeEl.textContent = `ধাপ ${bengaliDigits[stepIdx + 1]} / ৩৮`;
+            if (storyTextEl) {
+                storyTextEl.classList.remove('animate-pop');
+                void storyTextEl.offsetWidth;
+                storyTextEl.textContent = stepData.text;
+                storyTextEl.classList.add('animate-pop');
+            }
+            if (hintEl) hintEl.textContent = stepData.hint;
 
-            document.getElementById('btn-prev').disabled = (stepIdx === 0);
-            document.getElementById('btn-next').disabled = (stepIdx === storySteps.length - 1);
+            const btnPrev = document.getElementById('btn-prev');
+            const btnNext = document.getElementById('btn-next');
+            if (btnPrev) btnPrev.disabled = (stepIdx === 0);
+            if (btnNext) btnNext.disabled = (stepIdx === storySteps.length - 1);
 
             if (stepIdx < 6) {
-                scene1.classList.remove('hidden');
-                scene2.classList.add('hidden');
-                scene3.classList.add('hidden');
-                sceneEx.classList.add('hidden');
-                headerTitle.textContent = "সোনালির গাছ লাগানোর গল্প";
-                storyIcon.textContent = "🌱";
-                storyIcon.className = "w-11 h-11 rounded-2xl bg-emerald-500 flex items-center justify-center text-white text-2xl shadow-inner";
+                if (scene1) scene1.classList.remove('hidden');
+                if (scene2) scene2.classList.add('hidden');
+                if (scene3) scene3.classList.add('hidden');
+                if (sceneEx) sceneEx.classList.add('hidden');
+                if (sceneClass) sceneClass.classList.add('hidden');
+                if (headerTitle) headerTitle.textContent = "সোনালির গাছ লাগানোর গল্প";
+                if (storyIcon) {
+                    storyIcon.textContent = "🌱";
+                    storyIcon.className = "w-11 h-11 rounded-2xl bg-emerald-500 flex items-center justify-center text-white text-2xl shadow-inner";
+                }
             } else if (stepIdx < 12) {
-                scene1.classList.add('hidden');
-                scene2.classList.remove('hidden');
-                scene3.classList.add('hidden');
-                sceneEx.classList.add('hidden');
-                headerTitle.textContent = "ডাক্তার কাকু ও কলার গল্প";
-                storyIcon.textContent = "🍌";
-                storyIcon.className = "w-11 h-11 rounded-2xl bg-amber-400 flex items-center justify-center text-white text-2xl shadow-inner";
+                if (scene1) scene1.classList.add('hidden');
+                if (scene2) scene2.classList.remove('hidden');
+                if (scene3) scene3.classList.add('hidden');
+                if (sceneEx) sceneEx.classList.add('hidden');
+                if (sceneClass) sceneClass.classList.add('hidden');
+                if (headerTitle) headerTitle.textContent = "ডাক্তার কাকু ও কলার গল্প";
+                if (storyIcon) {
+                    storyIcon.textContent = "🍌";
+                    storyIcon.className = "w-11 h-11 rounded-2xl bg-amber-400 flex items-center justify-center text-white text-2xl shadow-inner";
+                }
             } else if (stepIdx < 24) {
-                scene1.classList.add('hidden');
-                scene2.classList.add('hidden');
-                scene3.classList.remove('hidden');
-                sceneEx.classList.add('hidden');
-                headerTitle.textContent = "রমলার বাজার থেকে ফল কেনার গল্প";
-                storyIcon.textContent = "🍎";
-                storyIcon.className = "w-11 h-11 rounded-2xl bg-rose-500 flex items-center justify-center text-white text-2xl shadow-inner";
-            } else {
-                scene1.classList.add('hidden');
-                scene2.classList.add('hidden');
-                scene3.classList.add('hidden');
-                sceneEx.classList.remove('hidden');
-                headerTitle.textContent = "বার বার যোগের অনুশীলন";
-                storyIcon.textContent = "✏️";
-                storyIcon.className = "w-11 h-11 rounded-2xl bg-purple-600 flex items-center justify-center text-white text-2xl shadow-inner";
+                if (scene1) scene1.classList.add('hidden');
+                if (scene2) scene2.classList.add('hidden');
+                if (scene3) scene3.classList.remove('hidden');
+                if (sceneEx) sceneEx.classList.add('hidden');
+                if (sceneClass) sceneClass.classList.add('hidden');
+                if (headerTitle) headerTitle.textContent = "রমলার বাজার থেকে ফল কেনার গল্প";
+                if (storyIcon) {
+                    storyIcon.textContent = "🍎";
+                    storyIcon.className = "w-11 h-11 rounded-2xl bg-rose-500 flex items-center justify-center text-white text-2xl shadow-inner";
+                }
+            } else if (stepIdx < 33) {
+                if (scene1) scene1.classList.add('hidden');
+                if (scene2) scene2.classList.add('hidden');
+                if (scene3) scene3.classList.add('hidden');
+                if (sceneEx) sceneEx.classList.remove('hidden');
+                if (sceneClass) sceneClass.classList.add('hidden');
+                if (headerTitle) headerTitle.textContent = "বার বার যোগের অনুশীলন";
+                if (storyIcon) {
+                    storyIcon.textContent = "✏️";
+                    storyIcon.className = "w-11 h-11 rounded-2xl bg-purple-600 flex items-center justify-center text-white text-2xl shadow-inner";
+                }
                 if (stepData.exercise) {
                     renderExerciseSlide(stepData.exercise);
                 } else if (stepIdx === 32) {
-                    document.getElementById('ex-problem-text').textContent = "অভিনন্দন! তুমি সকল অনুশীলন সফলভাবে সম্পন্ন করেছো!";
-                    document.getElementById('ex-visual-icons').textContent = "🌟 🏆 🌟";
-                    document.getElementById('ex-options-grid').innerHTML = '<div class="col-span-2 sm:col-span-4 bg-amber-100 border-3 border-amber-500 text-amber-950 font-black text-xl py-3 rounded-2xl">🎉 দারুণ চ্যাম্পিয়ন! 🎉</div>';
+                    const exProb = document.getElementById('ex-problem-text');
+                    const exVis = document.getElementById('ex-visual-icons');
+                    const exOpt = document.getElementById('ex-options-grid');
+                    if (exProb) exProb.textContent = "অভিনন্দন! আমরা সকল অনুশীলন সফলভাবে সম্পন্ন পেরেছি!";
+                    if (exVis) exVis.textContent = "🌟 🏆 🌟";
+                    if (exOpt) exOpt.innerHTML = '<div class="col-span-2 sm:col-span-4 bg-amber-100 border-3 border-amber-500 text-amber-950 font-black text-xl py-3 rounded-2xl">🎉 দারুণ চ্যাম্পিয়ন! 🎉</div>';
+                    playCelebrationFanfare();
+                    launchConfetti();
+                }
+            } else {
+                if (scene1) scene1.classList.add('hidden');
+                if (scene2) scene2.classList.add('hidden');
+                if (scene3) scene3.classList.add('hidden');
+                if (sceneEx) sceneEx.classList.add('hidden');
+                if (sceneClass) sceneClass.classList.remove('hidden');
+                if (headerTitle) headerTitle.textContent = "শ্রেণিকক্ষে ছাত্র-ছাত্রী";
+                if (storyIcon) {
+                    storyIcon.textContent = "🏫";
+                    storyIcon.className = "w-11 h-11 rounded-2xl bg-sky-600 flex items-center justify-center text-white text-2xl shadow-inner";
+                }
+
+                if (stepIdx === 33) renderClassroomBenches(0);
+                else if (stepIdx === 34) {
+                    renderClassroomBenches(6);
+                    [1, 2, 3, 4, 5, 6].forEach((bNum, idx) => {
+                        scheduleStepAction(() => {
+                            renderClassroomBenches(bNum);
+                            playPopSound(1 + idx * 0.1);
+                        }, idx * 350);
+                    });
+                }
+                else if (stepIdx === 35) renderClassroomBenches(6);
+                else if (stepIdx === 36) {
+                    renderClassroomBenches(6);
+                    playCelebrationFanfare();
+                    launchConfetti();
+                }
+                else if (stepIdx === 37) {
+                    renderClassroomBenches(6);
                     playCelebrationFanfare();
                     launchConfetti();
                 }
             }
-
-            speakCurrentLine();
 
             const sonali = document.getElementById('sonali-container');
             const sonaliBubble = document.getElementById('sonali-bubble');
@@ -1347,166 +1559,212 @@
             const kidsRow = document.getElementById('kids-row');
             const ramalaBubble = document.getElementById('ramala-bubble');
 
-            if (stepIdx === 0) {
+            if (stepIdx === 0 && sonali) {
                 sonali.style.left = '10%';
-                sonaliBubble.innerHTML = '<span>গাছ লাগাতে খুব ভালো লাগে!</span> <span>🌱💚</span>';
+                if (sonaliBubble) sonaliBubble.innerHTML = '<span>গাছ লাগাতে খুব ভালো লাগে!</span> <span>🌱💚</span>';
                 setSaplingVisible(1, false); setSaplingVisible(2, false); setSaplingVisible(3, false);
                 playPopSound(1);
             }
             else if (stepIdx === 1) {
                 setSaplingVisible(1, false); setSaplingVisible(2, false); setSaplingVisible(3, false);
-                sonali.style.left = '18%';
-                sonaliBubble.innerHTML = '<span>১ম জায়গায় ১টি চারা</span> <span>🌱</span>';
-                waterDrops.classList.remove('hidden');
+                if (sonali) sonali.style.left = '18%';
+                if (sonaliBubble) sonaliBubble.innerHTML = '<span>১ম জায়গায় ১টি চারা</span> <span>🌱</span>';
+                if (waterDrops) waterDrops.classList.remove('hidden');
 
                 scheduleStepAction(() => { setSaplingVisible(1, true, true); playPlantSound(); }, 500);
-                scheduleStepAction(() => { sonali.style.left = '44%'; sonaliBubble.innerHTML = '<span>২য় জায়গায় ১টি চারা</span> <span>🌱</span>'; }, 1350);
+                scheduleStepAction(() => { if (sonali) sonali.style.left = '44%'; if (sonaliBubble) sonaliBubble.innerHTML = '<span>২য় জায়গায় ১টি চারা</span> <span>🌱</span>'; }, 1350);
                 scheduleStepAction(() => { setSaplingVisible(2, true, true); playPlantSound(); }, 1850);
-                scheduleStepAction(() => { sonali.style.left = '70%'; sonaliBubble.innerHTML = '<span>৩য় জায়গায় ১টি চারা</span> <span>🌱</span>'; }, 2700);
+                scheduleStepAction(() => { if (sonali) sonali.style.left = '70%'; if (sonaliBubble) sonaliBubble.innerHTML = '<span>৩য় জায়গায় ১টি চারা</span> <span>🌱</span>'; }, 2700);
                 scheduleStepAction(() => { setSaplingVisible(3, true, true); playPlantSound(); }, 3200);
-                scheduleStepAction(() => { waterDrops.classList.add('hidden'); sonali.style.left = '6%'; sonaliBubble.innerHTML = '<span>৩ জায়গায় লাগানো শেষ!</span> <span>✨</span>'; }, 4000);
+                scheduleStepAction(() => { if (waterDrops) waterDrops.classList.add('hidden'); if (sonali) sonali.style.left = '6%'; if (sonaliBubble) sonaliBubble.innerHTML = '<span>৩ জায়গায় লাগানো শেষ!</span> <span>✨</span>'; }, 4000);
             }
             else if (stepIdx === 2) {
-                sonali.style.left = '6%';
-                sonaliBubble.innerHTML = '<span>মোট কয়টি হলো বলো তো?</span> <span>🤔❓</span>';
+                if (sonali) sonali.style.left = '6%';
+                if (sonaliBubble) sonaliBubble.innerHTML = '<span>মোট কয়টি হলো বলো তো?</span> <span>🤔❓</span>';
                 setSaplingVisible(1, true, false); setSaplingVisible(2, true, false); setSaplingVisible(3, true, false);
-                document.getElementById('question-title').textContent = 'চলো তো একসাথে গুনে দেখি!';
-                document.getElementById('question-sub').textContent = 'গাছের চারাগুলোর ওপর ক্লিক করে গুনতে পারো!';
-                document.getElementById('question-bubble').classList.remove('hidden');
+                const qTitle = document.getElementById('question-title');
+                const qSub = document.getElementById('question-sub');
+                const qBubble = document.getElementById('question-bubble');
+                if (qTitle) qTitle.textContent = 'চলো তো একসাথে গুনে দেখি!';
+                if (qSub) qSub.textContent = 'গাছের চারাগুলোর ওপর ক্লিক করে গুনতে পারি!';
+                if (qBubble) qBubble.classList.remove('hidden');
                 playPopSound(1.15);
             }
             else if (stepIdx === 3) {
-                sonali.style.left = '5%';
-                sonaliBubble.innerHTML = '<span>১ + ১ + ১ = ৩</span> <span>🌟</span>';
+                if (sonali) sonali.style.left = '5%';
+                if (sonaliBubble) sonaliBubble.innerHTML = '<span>১ + ১ + ১ = ৩</span> <span>🌟</span>';
                 setSaplingVisible(1, true, false); setSaplingVisible(2, true, false); setSaplingVisible(3, true, false);
-                configureEquationBoard('১', '৩', '🌱 (১ম বার ১) + 🌱 (২য় বার ১) + 🌱 (৩য় বার ১) = মোট ৩টি চারা!');
-                document.getElementById('plus-1-2').classList.remove('hidden');
-                document.getElementById('plus-2-3').classList.remove('hidden');
-                document.getElementById('equation-board').classList.remove('hidden');
+                configureEquationBoard('১', '৩', '🌱 (১ম বার ১) + 🌱 (২য় বার ১) + 🌱 (৩য় বার ১) = মোট ৩টি চারা!');
+                const p12 = document.getElementById('plus-1-2');
+                const p23 = document.getElementById('plus-2-3');
+                const eqBrd = document.getElementById('equation-board');
+                if (p12) p12.classList.remove('hidden');
+                if (p23) p23.classList.remove('hidden');
+                if (eqBrd) eqBrd.classList.remove('hidden');
                 [1, 2, 3].forEach((n, idx) => {
                     scheduleStepAction(() => {
-                        document.getElementById(`label-${n}`).classList.add('animate-pulse-glow');
-                        document.getElementById(`eq-num-${n}`).classList.add('animate-pulse-glow', 'bg-yellow-300');
+                        const lbl = document.getElementById(`label-${n}`);
+                        const eqNum = document.getElementById(`eq-num-${n}`);
+                        if (lbl) lbl.classList.add('animate-pulse-glow');
+                        if (eqNum) eqNum.classList.add('animate-pulse-glow', 'bg-yellow-300');
                         playPopSound(1 + idx * 0.15);
                     }, idx * 450);
                 });
             }
             else if (stepIdx === 4) {
-                sonali.style.left = '5%';
-                sonaliBubble.innerHTML = '<span>তিনবার ১ যোগ করলে ৩ হয়!</span> <span>👏</span>';
+                if (sonali) sonali.style.left = '5%';
+                if (sonaliBubble) sonaliBubble.innerHTML = '<span>তিনবার ১ যোগ করলে ৩ হয়!</span> <span>👏</span>';
                 setSaplingVisible(1, true, false); setSaplingVisible(2, true, false); setSaplingVisible(3, true, false);
-                configureEquationBoard('১', '৩', '🌱 (১ম বার ১) + 🌱 (২য় বার ১) + 🌱 (৩য় বার ১) = মোট ৩টি চারা!');
-                document.getElementById('plus-1-2').classList.remove('hidden');
-                document.getElementById('plus-2-3').classList.remove('hidden');
-                document.getElementById('equation-board').classList.remove('hidden');
-                document.getElementById('step5-explainer').classList.remove('hidden');
+                configureEquationBoard('১', '৩', '🌱 (১ম বার ১) + 🌱 (২য় বার ১) + 🌱 (৩য় বার ১) = মোট ৩টি চারা!');
+                const p12 = document.getElementById('plus-1-2');
+                const p23 = document.getElementById('plus-2-3');
+                const eqBrd = document.getElementById('equation-board');
+                const st5Exp = document.getElementById('step5-explainer');
+                if (p12) p12.classList.remove('hidden');
+                if (p23) p23.classList.remove('hidden');
+                if (eqBrd) eqBrd.classList.remove('hidden');
+                if (st5Exp) st5Exp.classList.remove('hidden');
                 for (let i = 1; i <= 3; i++) {
-                    document.getElementById(`label-${i}`).classList.add('animate-pulse-glow');
-                    document.getElementById(`eq-num-${i}`).classList.add('animate-pulse-glow', 'bg-yellow-300');
+                    const lbl = document.getElementById(`label-${i}`);
+                    const eqNum = document.getElementById(`eq-num-${i}`);
+                    if (lbl) lbl.classList.add('animate-pulse-glow');
+                    if (eqNum) eqNum.classList.add('animate-pulse-glow', 'bg-yellow-300');
                 }
                 playPopSound(1.25);
             }
             else if (stepIdx === 5) {
-                sonali.style.left = '6%';
-                sonaliBubble.innerHTML = '<span>মোট ৩টি গাছের চারা! কি মজা!</span> <span>🎉🌸</span>';
+                if (sonali) sonali.style.left = '6%';
+                if (sonaliBubble) sonaliBubble.innerHTML = '<span>মোট ৩টি গাছের চারা! কি মজা!</span> <span>🎉🌸</span>';
                 setSaplingVisible(1, true, false); setSaplingVisible(2, true, false); setSaplingVisible(3, true, false);
-                document.getElementById('final-banner-text').textContent = 'মোট ৩টি নতুন গাছের চারা! (১, ২, ৩)';
-                document.getElementById('final-banner-icon').textContent = '🌸';
-                document.getElementById('final-banner').classList.remove('hidden');
+                const fText = document.getElementById('final-banner-text');
+                const fIcon = document.getElementById('final-banner-icon');
+                const fBanner = document.getElementById('final-banner');
+                if (fText) fText.textContent = 'মোট ৩টি নতুন গাছের চারা! (১, ২, ৩)';
+                if (fIcon) fIcon.textContent = '🌸';
+                if (fBanner) fBanner.classList.remove('hidden');
                 launchConfetti();
                 playCelebrationFanfare();
                 [1, 2, 3].forEach((n, idx) => {
                     scheduleStepAction(() => {
                         const topBadge = document.getElementById(`top-count-${n}`);
                         const flower = document.getElementById(`flower-${n}`);
-                        topBadge.textContent = bengaliDigits[n];
-                        topBadge.classList.remove('hidden');
-                        flower.classList.remove('hidden');
+                        if (topBadge) {
+                            topBadge.textContent = bengaliDigits[n];
+                            topBadge.classList.remove('hidden');
+                        }
+                        if (flower) flower.classList.remove('hidden');
                         playPopSound(1 + idx * 0.2);
                     }, idx * 550);
                 });
             }
             else if (stepIdx === 6) {
-                doctor.classList.remove('opacity-40', 'scale-90');
-                doctorBubble.innerHTML = '<span>কলা খেলে শক্তি বাড়ে!</span> <span>💪🍌</span>';
-                kidsRow.className = 'absolute bottom-2 right-0 left-24 sm:left-36 px-2 sm:px-6 flex justify-around items-end z-20 transition-all duration-500';
-                for (let i = 1; i <= 3; i++) { document.getElementById(`b-label-${i}`).classList.add('opacity-0'); }
+                if (doctor) doctor.classList.remove('opacity-40', 'scale-90');
+                if (doctorBubble) doctorBubble.innerHTML = '<span>কলা খেলে শক্তি বাড়ে!</span> <span>💪🍌</span>';
+                if (kidsRow) kidsRow.className = 'absolute bottom-2 right-0 left-24 sm:left-36 px-2 sm:px-6 flex justify-around items-end z-20 transition-all duration-500';
+                for (let i = 1; i <= 3; i++) {
+                    const bLbl = document.getElementById(`b-label-${i}`);
+                    if (bLbl) bLbl.classList.add('opacity-0');
+                }
                 playPopSound(1.05);
             }
             else if (stepIdx === 7) {
-                doctorBubble.innerHTML = '<span>চলো গুনে দেখি!</span> <span>🤔🍌</span>';
-                document.getElementById('question-title').textContent = 'তিনজনে মিলে কয়টি কলা খায়?';
-                document.getElementById('question-sub').textContent = 'কলাগুলোর ওপর ক্লিক করে ১ থেকে ৬ পর্যন্ত গুনতে পারো!';
-                document.getElementById('question-bubble').classList.remove('hidden');
+                if (doctorBubble) doctorBubble.innerHTML = '<span>চলো গুনে দেখি!</span> <span>🤔🍌</span>';
+                const qTitle = document.getElementById('question-title');
+                const qSub = document.getElementById('question-sub');
+                const qBubble = document.getElementById('question-bubble');
+                if (qTitle) qTitle.textContent = 'তিনজনে মিলে কয়টি কলা খায়?';
+                if (qSub) qSub.textContent = 'কলাগুলোর ওপর ক্লিক করে ১ থেকে ৬ পর্যন্ত গুনতে পারি!';
+                if (qBubble) qBubble.classList.remove('hidden');
                 playPopSound(1.15);
             }
             else if (stepIdx === 8) {
-                doctorBubble.innerHTML = '<span>প্রত্যেকে ২টি করে!</span> <span>🍌🍌</span>';
-                for (let i = 1; i <= 3; i++) { document.getElementById(`b-label-${i}`).classList.add('opacity-0'); }
+                if (doctorBubble) doctorBubble.innerHTML = '<span>প্রত্যেকে ২টি করে!</span> <span>🍌🍌</span>';
+                for (let i = 1; i <= 3; i++) {
+                    const bLbl = document.getElementById(`b-label-${i}`);
+                    if (bLbl) bLbl.classList.add('opacity-0');
+                }
                 [1, 2, 3].forEach((n, idx) => {
                     scheduleStepAction(() => {
                         const lbl = document.getElementById(`b-label-${n}`);
                         const kidSvg = document.getElementById(`kid-svg-${n}`);
-                        lbl.classList.remove('opacity-0');
-                        lbl.classList.add('animate-pulse-glow');
-                        kidSvg.classList.add('animate-bounce');
+                        if (lbl) {
+                            lbl.classList.remove('opacity-0');
+                            lbl.classList.add('animate-pulse-glow');
+                        }
+                        if (kidSvg) kidSvg.classList.add('animate-bounce');
                         playPlantSound();
                     }, idx * 750);
                 });
             }
             else if (stepIdx === 9) {
-                doctorBubble.innerHTML = '<span>২ + ২ + ২ = ৬</span> <span>🌟</span>';
+                if (doctorBubble) doctorBubble.innerHTML = '<span>২ + ২ + ২ = ৬</span> <span>🌟</span>';
                 configureEquationBoard('২', '৬', '🍌🍌 (২) + 🍌🍌 (২) + 🍌🍌 (২) = মোট ৬টি কলা!');
-                document.getElementById('b-plus-1-2').classList.remove('hidden');
-                document.getElementById('b-plus-2-3').classList.remove('hidden');
-                document.getElementById('equation-board').classList.remove('hidden');
+                const bp12 = document.getElementById('b-plus-1-2');
+                const bp23 = document.getElementById('b-plus-2-3');
+                const eqBrd = document.getElementById('equation-board');
+                if (bp12) bp12.classList.remove('hidden');
+                if (bp23) bp23.classList.remove('hidden');
+                if (eqBrd) eqBrd.classList.remove('hidden');
                 [1, 2, 3].forEach((n, idx) => {
                     scheduleStepAction(() => {
-                        document.getElementById(`b-label-${n}`).classList.add('animate-pulse-glow');
-                        document.getElementById(`eq-num-${n}`).classList.add('animate-pulse-glow', 'bg-yellow-300');
+                        const bLbl = document.getElementById(`b-label-${n}`);
+                        const eqNum = document.getElementById(`eq-num-${n}`);
+                        if (bLbl) bLbl.classList.add('animate-pulse-glow');
+                        if (eqNum) eqNum.classList.add('animate-pulse-glow', 'bg-yellow-300');
                         playPopSound(1 + idx * 0.15);
                     }, idx * 450);
                 });
             }
             else if (stepIdx === 10) {
-                doctorBubble.innerHTML = '<span>তিনবার ২ যোগ করলে ৬ হয়!</span> <span>👏</span>';
-                configureEquationBoard('২', '৬', '🍌🍌 (১ম বার ২) + 🍌🍌 (২য় বার ২) + 🍌🍌 (৩য় বার ২) = ৬টি কলা!');
-                document.getElementById('b-plus-1-2').classList.remove('hidden');
-                document.getElementById('b-plus-2-3').classList.remove('hidden');
-                document.getElementById('equation-board').classList.remove('hidden');
-                document.getElementById('step5-explainer').classList.remove('hidden');
+                if (doctorBubble) doctorBubble.innerHTML = '<span>তিনবার ২ যোগ করলে ৬ হয়!</span> <span>👏</span>';
+                configureEquationBoard('২', '৬', '🍌🍌 (১ম বার ২) + 🍌🍌 (২য় বার ২) + 🍌🍌 (৩য় বার ২) = ৬টি কলা!');
+                const bp12 = document.getElementById('b-plus-1-2');
+                const bp23 = document.getElementById('b-plus-2-3');
+                const eqBrd = document.getElementById('equation-board');
+                const st5Exp = document.getElementById('step5-explainer');
+                if (bp12) bp12.classList.remove('hidden');
+                if (bp23) bp23.classList.remove('hidden');
+                if (eqBrd) eqBrd.classList.remove('hidden');
+                if (st5Exp) st5Exp.classList.remove('hidden');
                 for (let i = 1; i <= 3; i++) {
-                    document.getElementById(`b-label-${i}`).classList.add('animate-pulse-glow');
-                    document.getElementById(`eq-num-${i}`).classList.add('animate-pulse-glow', 'bg-yellow-300');
+                    const bLbl = document.getElementById(`b-label-${i}`);
+                    const eqNum = document.getElementById(`eq-num-${i}`);
+                    if (bLbl) bLbl.classList.add('animate-pulse-glow');
+                    if (eqNum) eqNum.classList.add('animate-pulse-glow', 'bg-yellow-300');
                 }
                 playPopSound(1.25);
             }
             else if (stepIdx === 11) {
-                doctorBubble.innerHTML = '<span>সাবাশ! মোট ৬টি কলা!</span> <span>🎉💪</span>';
-                document.getElementById('final-banner-text').textContent = 'তিনজনে মিলে মোট ৬টি কলা খায়! (১, ২, ৩, ৪, ৫, ৬)';
-                document.getElementById('final-banner-icon').textContent = '🍌';
-                document.getElementById('final-banner').classList.remove('hidden');
+                if (doctorBubble) doctorBubble.innerHTML = '<span>সাবাশ! মোট ৬টি কলা!</span> <span>🎉💪</span>';
+                const fText = document.getElementById('final-banner-text');
+                const fIcon = document.getElementById('final-banner-icon');
+                const fBanner = document.getElementById('final-banner');
+                if (fText) fText.textContent = 'তিনজনে মিলে মোট ৬টি কলা খায়! (১, ২, ৩, ৪, ৫, ৬)';
+                if (fIcon) fIcon.textContent = '🍌';
+                if (fBanner) fBanner.classList.remove('hidden');
                 launchConfetti();
                 playCelebrationFanfare();
                 for (let i = 1; i <= 3; i++) {
-                    document.getElementById(`energy-${i}`).classList.remove('hidden');
-                    document.getElementById(`kid-svg-${i}`).classList.add('animate-bounce');
+                    const energy = document.getElementById(`energy-${i}`);
+                    const kidSvg = document.getElementById(`kid-svg-${i}`);
+                    if (energy) energy.classList.remove('hidden');
+                    if (kidSvg) kidSvg.classList.add('animate-bounce');
                 }
                 [1, 2, 3, 4, 5, 6].forEach((bNum, idx) => {
                     scheduleStepAction(() => {
                         const bBadge = document.getElementById(`b-count-${bNum}`);
-                        bBadge.classList.remove('hidden');
+                        if (bBadge) bBadge.classList.remove('hidden');
                         playPopSound(0.9 + idx * 0.12);
                     }, idx * 380);
                 });
             }
             else if (stepIdx === 12) {
-                ramalaBubble.innerHTML = '<span>চালতা, কমলা ও আপেল!</span> <span>🧺🍎</span>';
+                if (ramalaBubble) ramalaBubble.innerHTML = '<span>চালতা, কমলা ও আপেল!</span> <span>🧺🍎</span>';
                 renderStory3IntroBaskets();
                 playPopSound(1.05);
             }
             else if (stepIdx === 13) {
-                ramalaBubble.innerHTML = '<span>৩টি করে ৫ বার চালতা!</span> <span>🍏</span>';
+                if (ramalaBubble) ramalaBubble.innerHTML = '<span>৩টি করে ৫ বার চালতা!</span> <span>🍏</span>';
                 renderStory3FruitGroups('chalta', 5, 3, '৩', true);
                 configureStory3Equation(5, '৩', '১৫ টি চালতা', '', false);
                 [1, 2, 3, 4, 5].forEach((g, idx) => {
@@ -1520,21 +1778,26 @@
                 });
             }
             else if (stepIdx === 14) {
-                ramalaBubble.innerHTML = '<span>৩ পাঁচবার যোগ করলে ১৫ হয়!</span> <span>👏</span>';
+                if (ramalaBubble) ramalaBubble.innerHTML = '<span>৩ পাঁচবার যোগ করলে ১৫ হয়!</span> <span>👏</span>';
                 renderStory3FruitGroups('chalta', 5, 3, '৩', true);
                 configureStory3Equation(5, '৩', '১৫টি', '🍏 ৩টি করে ৫ বার যোগ করলে (৩+৩+৩+৩+৩) = ১৫টি চালতা!', true);
                 for (let g = 1; g <= 5; g++) {
-                    document.getElementById(`s3-label-${g}`).classList.add('animate-pulse-glow');
-                    document.getElementById(`s3-eq-num-${g}`).classList.add('animate-pulse-glow', 'bg-yellow-300');
+                    const lbl = document.getElementById(`s3-label-${g}`);
+                    const eq = document.getElementById(`s3-eq-num-${g}`);
+                    if (lbl) lbl.classList.add('animate-pulse-glow');
+                    if (eq) eq.classList.add('animate-pulse-glow', 'bg-yellow-300');
                 }
                 playPopSound(1.2);
             }
             else if (stepIdx === 15) {
-                ramalaBubble.innerHTML = '<span>মোট ১৫টি চালতা!</span> <span>🎉🍏</span>';
+                if (ramalaBubble) ramalaBubble.innerHTML = '<span>মোট ১৫টি চালতা!</span> <span>🎉🍏</span>';
                 renderStory3FruitGroups('chalta', 5, 3, '৩', false);
-                document.getElementById('final-banner-text').textContent = 'রমলা মোট ১৫টি চালতা কিনেছিল!';
-                document.getElementById('final-banner-icon').textContent = '🍏';
-                document.getElementById('final-banner').classList.remove('hidden');
+                const fText = document.getElementById('final-banner-text');
+                const fIcon = document.getElementById('final-banner-icon');
+                const fBanner = document.getElementById('final-banner');
+                if (fText) fText.textContent = 'রমলা মোট ১৫টি চালতা কিনেছিল!';
+                if (fIcon) fIcon.textContent = '🍏';
+                if (fBanner) fBanner.classList.remove('hidden');
                 launchConfetti();
                 playCelebrationFanfare();
                 for (let f = 1; f <= 15; f++) {
@@ -1546,15 +1809,18 @@
                 }
             }
             else if (stepIdx === 16) {
-                ramalaBubble.innerHTML = '<span>তারপর কমলা কিনলাম!</span> <span>🍊</span>';
+                if (ramalaBubble) ramalaBubble.innerHTML = '<span>তারপর কমলা কিনলাম!</span> <span>🍊</span>';
                 renderStory3FruitGroups('orange', 3, 4, '৪', false);
-                document.getElementById('question-title').textContent = 'এবার কমলাগুলো দেখো!';
-                document.getElementById('question-sub').textContent = 'প্রতিটি ঝুড়িতে ৪টি করে ৩টি ঝুড়িতে কমলা আছে!';
-                document.getElementById('question-bubble').classList.remove('hidden');
+                const qTitle = document.getElementById('question-title');
+                const qSub = document.getElementById('question-sub');
+                const qBubble = document.getElementById('question-bubble');
+                if (qTitle) qTitle.textContent = 'এবার কমলাগুলো দেখো!';
+                if (qSub) qSub.textContent = 'প্রতিটি ঝুড়িতে ৪টি করে ৩টি ঝুড়িতে কমলা আছে!';
+                if (qBubble) qBubble.classList.remove('hidden');
                 playPopSound(1.1);
             }
             else if (stepIdx === 17) {
-                ramalaBubble.innerHTML = '<span>৪ + ৪ + ৪ = ১২টি কমলা!</span> <span>🍊</span>';
+                if (ramalaBubble) ramalaBubble.innerHTML = '<span>৪ + ৪ + ৪ = ১২টি কমলা!</span> <span>🍊</span>';
                 renderStory3FruitGroups('orange', 3, 4, '৪', true);
                 configureStory3Equation(3, '৪', '১২টি কমলা', '', false);
                 [1, 2, 3].forEach((g, idx) => {
@@ -1568,21 +1834,26 @@
                 });
             }
             else if (stepIdx === 18) {
-                ramalaBubble.innerHTML = '<span>৪ তিনবার যোগ করলে ১২ হয়!</span> <span>👏</span>';
+                if (ramalaBubble) ramalaBubble.innerHTML = '<span>৪ তিনবার যোগ করলে ১২ হয়!</span> <span>👏</span>';
                 renderStory3FruitGroups('orange', 3, 4, '৪', true);
                 configureStory3Equation(3, '৪', '১২ টি', '🍊 ৪টি করে ৩ বার যোগ করলে (৪+৪+৪) = ১২টি কমলা!', true);
                 for (let g = 1; g <= 3; g++) {
-                    document.getElementById(`s3-label-${g}`).classList.add('animate-pulse-glow');
-                    document.getElementById(`s3-eq-num-${g}`).classList.add('animate-pulse-glow', 'bg-yellow-300');
+                    const lbl = document.getElementById(`s3-label-${g}`);
+                    const eq = document.getElementById(`s3-eq-num-${g}`);
+                    if (lbl) lbl.classList.add('animate-pulse-glow');
+                    if (eq) eq.classList.add('animate-pulse-glow', 'bg-yellow-300');
                 }
                 playPopSound(1.2);
             }
             else if (stepIdx === 19) {
-                ramalaBubble.innerHTML = '<span>মোট ১২টি কমলা!</span> <span>🎉🍊</span>';
+                if (ramalaBubble) ramalaBubble.innerHTML = '<span>মোট ১২টি কমলা!</span> <span>🎉🍊</span>';
                 renderStory3FruitGroups('orange', 3, 4, '৪', false);
-                document.getElementById('final-banner-text').textContent = 'রমলা মোট ১২ টি কমলা কিনেছিল!';
-                document.getElementById('final-banner-icon').textContent = '🍊';
-                document.getElementById('final-banner').classList.remove('hidden');
+                const fText = document.getElementById('final-banner-text');
+                const fIcon = document.getElementById('final-banner-icon');
+                const fBanner = document.getElementById('final-banner');
+                if (fText) fText.textContent = 'রমলা মোট ১২ টি কমলা কিনেছিল!';
+                if (fIcon) fIcon.textContent = '🍊';
+                if (fBanner) fBanner.classList.remove('hidden');
                 launchConfetti();
                 playCelebrationFanfare();
                 for (let f = 1; f <= 12; f++) {
@@ -1594,15 +1865,18 @@
                 }
             }
             else if (stepIdx === 20) {
-                ramalaBubble.innerHTML = '<span>আবার লাল আপেলও কিনেছি!</span> <span>🍎</span>';
+                if (ramalaBubble) ramalaBubble.innerHTML = '<span>আবার লাল আপেলও কিনেছি!</span> <span>🍎</span>';
                 renderStory3FruitGroups('apple', 4, 5, '৫', false);
-                document.getElementById('question-title').textContent = 'এবার লাল আপেলগুলো দেখো!';
-                document.getElementById('question-sub').textContent = 'প্রতিটি ঝুড়িতে ৫টি করে ৪টি ঝুড়িতে আপেল আছে!';
-                document.getElementById('question-bubble').classList.remove('hidden');
+                const qTitle = document.getElementById('question-title');
+                const qSub = document.getElementById('question-sub');
+                const qBubble = document.getElementById('question-bubble');
+                if (qTitle) qTitle.textContent = 'এবার লাল আপেলগুলো দেখো!';
+                if (qSub) qSub.textContent = 'প্রতিটি ঝুড়িতে ৫টি করে ৪টি ঝুড়িতে আপেল আছে!';
+                if (qBubble) qBubble.classList.remove('hidden');
                 playPopSound(1.1);
             }
             else if (stepIdx === 21) {
-                ramalaBubble.innerHTML = '<span>৫ + ৫ + ৫ + ৫ = ২০টি!</span> <span>🍎</span>';
+                if (ramalaBubble) ramalaBubble.innerHTML = '<span>৫ + ৫ + ৫ + ৫ = ২০টি!</span> <span>🍎</span>';
                 renderStory3FruitGroups('apple', 4, 5, '৫', true);
                 configureStory3Equation(4, '৫', '২০ টি', '', false);
                 [1, 2, 3, 4].forEach((g, idx) => {
@@ -1616,21 +1890,26 @@
                 });
             }
             else if (stepIdx === 22) {
-                ramalaBubble.innerHTML = '<span>৫ চারবার যোগ করলে ২০ হয়!</span> <span>👏</span>';
+                if (ramalaBubble) ramalaBubble.innerHTML = '<span>৫ চারবার যোগ করলে ২০ হয়!</span> <span>👏</span>';
                 renderStory3FruitGroups('apple', 4, 5, '৫', true);
                 configureStory3Equation(4, '৫', '২০ টি', '🍎 ৫টি করে ৪ বার যোগ করলে (৫+৫+৫+৫) = ২০টি আপেল!', true);
                 for (let g = 1; g <= 4; g++) {
-                    document.getElementById(`s3-label-${g}`).classList.add('animate-pulse-glow');
-                    document.getElementById(`s3-eq-num-${g}`).classList.add('animate-pulse-glow', 'bg-yellow-300');
+                    const lbl = document.getElementById(`s3-label-${g}`);
+                    const eq = document.getElementById(`s3-eq-num-${g}`);
+                    if (lbl) lbl.classList.add('animate-pulse-glow');
+                    if (eq) eq.classList.add('animate-pulse-glow', 'bg-yellow-300');
                 }
                 playPopSound(1.25);
             }
             else if (stepIdx === 23) {
-                ramalaBubble.innerHTML = '<span>মোট ২০টি আপেল! দারুণ!</span> <span>🎉🍎</span>';
+                if (ramalaBubble) ramalaBubble.innerHTML = '<span>মোট ২০টি আপেল! দারুণ!</span> <span>🎉🍎</span>';
                 renderStory3FruitGroups('apple', 4, 5, '৫', false);
-                document.getElementById('final-banner-text').textContent = 'রমলা মোট ২০ টি আপেল কিনেছিল!';
-                document.getElementById('final-banner-icon').textContent = '🍎';
-                document.getElementById('final-banner').classList.remove('hidden');
+                const fText = document.getElementById('final-banner-text');
+                const fIcon = document.getElementById('final-banner-icon');
+                const fBanner = document.getElementById('final-banner');
+                if (fText) fText.textContent = 'রমলা মোট ২০ টি আপেল কিনেছিল!';
+                if (fIcon) fIcon.textContent = '🍎';
+                if (fBanner) fBanner.classList.remove('hidden');
                 launchConfetti();
                 playCelebrationFanfare();
                 for (let f = 1; f <= 20; f++) {
@@ -1738,10 +2017,9 @@
             isMuted = !isMuted;
             const icon = document.getElementById('mute-icon');
             if (isMuted) {
-                if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-                icon.className = 'fas fa-volume-mute text-rose-600 text-lg';
+                if (icon) icon.className = 'fas fa-volume-mute text-rose-600 text-lg';
             } else {
-                icon.className = 'fas fa-music text-lg';
+                if (icon) icon.className = 'fas fa-music text-lg';
                 playPopSound(1);
             }
         }
